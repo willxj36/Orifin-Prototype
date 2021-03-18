@@ -48,9 +48,9 @@ const Login = () => {
                 <div className="row justify-content-center">
                     <button onClick={handleSubmit} className="px-5 btn btn-lg btn-dark">Log In</button>
                 </div>
-                <div className="mb-3 mt-4 row justify-content-around">
+                <div className="mb-3 mt-4 row justify-content-center">
                     <Link className="btn btn-outline-darkinfo" to="/memberships">Not a member yet? Check out our membership packages!</Link>
-                    <p className="my-2">or</p>
+                    <p className="mx-5">or</p>
                     <Link className="btn btn-outline-darkinfo" to='/register'>Register as a guest</Link>
                 </div>
             </div>

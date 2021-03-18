@@ -30,26 +30,26 @@ const ContactRequest = () => {
         }
     }, [resReq, email, subject, message])
 
-    const handleSubmit = async () => {
-        setBtnDisable(true);
-        !resReq && setEmail('noreply@noreply.com');
-        try {
-            let data = {
-                email,
-                subject,
-                text: `Response requested: ${resReq};
-                    Name: ${name};
-                    Message: ${message}`
-            };
-            let response = await apiService('/api/contact', 'POST', data);
-            alert(response.message);
-            setBtnDisable(false);
-        } catch (e) {
-            console.log(e);
-            alert('Email failed to send, please try again');
-            setBtnDisable(false);
-        }
-    }
+    // const handleSubmit = async () => {
+    //     setBtnDisable(true);
+    //     !resReq && setEmail('noreply@noreply.com');
+    //     try {
+    //         let data = {
+    //             email,
+    //             subject,
+    //             text: `Response requested: ${resReq};
+    //                 Name: ${name};
+    //                 Message: ${message}`
+    //         };
+    //         let response = await apiService('/api/contact', 'POST', data);
+    //         alert(response.message);
+    //         setBtnDisable(false);
+    //     } catch (e) {
+    //         console.log(e);
+    //         alert('Email failed to send, please try again');
+    //         setBtnDisable(false);
+    //     }
+    // }
 
     return(
         <main className="min-vh-100 d-flex bg-deepred pt-5">
@@ -84,7 +84,7 @@ const ContactRequest = () => {
                 <textarea onChange={(e) => setMessage(e.currentTarget.value)} name="message" id="messageInput" cols={30} rows={10} className="form-control mb-4" />
 
                 <div className="row justify-content-center">
-                    <button onClick={handleSubmit} className="px-5 btn btn-lg btn-dark" disabled={btnDisable}>Send</button>
+                    <a href={`mailto:willxj36@gmail.com?subject=${subject}&body=${message}`}><button className="px-5 btn btn-lg btn-dark" disabled={btnDisable}>Send</button></a>
                 </div>
 
             </div>
