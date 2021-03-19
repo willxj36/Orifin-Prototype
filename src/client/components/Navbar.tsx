@@ -26,7 +26,7 @@ const Navbar = () => {
 
     return(
         <>
-            <header className="navbar bg-gold fixed-top">
+            <header className="navbar fixed-top" style={{background: 'linear-gradient(177deg, #FFD766FF, #FFD76688)'}}>
                 <Link to='/'>
                     <h3 className="my-auto text-dark">Logo</h3>
                 </Link>
@@ -38,27 +38,27 @@ const Navbar = () => {
                     <div className="d-flex justify-content-end">
                         <ul className="position-absolute col-xl-2 col-md-4 col-sm-6 mr-n3 list-group">
                             <Link onClick={() => setMenu(false)} to='/'>
-                                <li className="list-group-item text-right">Home</li>
+                                <li className="list-group-item text-right text-white bg-dark">Home</li>
                             </Link>
 
                             {user.userid ? (
                             <Link onClick={() => setMenu(false)} to='/member-home'>
-                                <li className="list-group-item text-right">Member Home</li>
+                                <li className="list-group-item text-right text-white bg-dark">Member Home</li>
                             </Link>
                             ) : (
                             <Link onClick={() => setMenu(false)} to='/login'>
-                                <li className="list-group-item text-right">Login</li>
+                                <li className="list-group-item text-right text-white bg-dark">Login</li>
                             </Link>
                             )}
 
                             <Link onClick={() => setMenu(false)} to='/memberships'>
-                                <li className="list-group-item text-right">Memberships</li>
+                                <li className="list-group-item text-right text-white bg-dark">Memberships</li>
                             </Link>
                             <Link onClick={() => setMenu(false)} to='/calender'>
-                                <li className="list-group-item text-right">Calendar</li>
+                                <li className="list-group-item text-right text-white bg-dark">Calendar</li>
                             </Link> 
                             <Link onClick={() => setMenu(false)} to='/contact-request'>
-                                <li className="list-group-item text-right">Contact Request</li>
+                                <li className="list-group-item text-right text-white bg-dark">Contact Request</li>
                             </Link>                
                         </ul>
                     </div>

@@ -53,7 +53,7 @@ const ContactRequest = () => {
 
     return(
         <main className="min-vh-100 d-flex bg-deepred pt-5">
-            <div className="py-3 mt-sm-5 mt-1 bg-gold container align-self-start col-md-6 rounded">
+            <div className="py-3 mt-sm-5 mt-1 container bg-gold align-self-start col-md-6 rounded">
 
             <div className="mx-auto mb-2 row">
                     <FontAwesomeIcon icon={faComment} size='2x' />
