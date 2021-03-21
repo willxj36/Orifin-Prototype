@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 
@@ -9,6 +9,8 @@ import { IUser } from '../../utils/models';
 import { UserContext } from './ContextProvider';
 
 const Navbar = () => {
+
+    const history = useHistory();
 
     const [user,] = useContext(UserContext);
     const [userFirstName, setUserFirstName] = useState<string>('');
@@ -23,6 +25,17 @@ const Navbar = () => {
     }, [user])
     
     const [menu, setMenu] = useState<boolean>(false);
+
+    const logout = async () => {
+        setMenu(false);
+        let res = await apiService('/auth/logout');
+        if(res) {
+            alert('Logout successful');
+            history.push('/');
+        } else {
+            alert('Something went wrong, please try again');
+        }
+    }
 
     return(
         <>
@@ -59,7 +72,10 @@ const Navbar = () => {
                             </Link> 
                             <Link onClick={() => setMenu(false)} to='/contact-request'>
                                 <li className="list-group-item text-right text-white bg-dark">Contact Request</li>
-                            </Link>                
+                            </Link>
+
+                            {user.userid ? <li onClick={logout} className="list-group-item text-right text-white bg-dark" role="button">Logout</li> : null}
+
                         </ul>
                     </div>
                     ) : null}
