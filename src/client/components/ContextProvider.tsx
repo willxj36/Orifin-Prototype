@@ -11,8 +11,8 @@ export const UserContext = createContext<IContextUser>([{}, () => {}]);
 export const ContextProvider: React.FC = (props) => {
 
     const [user, setUser] = useState<IUserLocal>({
-        userid: undefined,
-        role: ''
+        userid: null,
+        role: null
     });
 
     useEffect(() => {

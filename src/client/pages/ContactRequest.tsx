@@ -5,6 +5,7 @@ import { faEnvelope, faComments, faComment } from '@fortawesome/free-solid-svg-i
 
 import apiService from '../../utils/apiService';
 import { UserContext, IContextUser } from '../components/ContextProvider';
+import { IUser } from '../../utils/models';
 
 const ContactRequest = () => {
 
@@ -22,9 +23,11 @@ const ContactRequest = () => {
     useEffect(() => {
         if(user.userid) { //if a user is logged in, auto-sets the email state to the user's email from the DB (email section of form will not appear)
             (async () => {
-                let userInfo = await apiService(`/users/id/${user.userid}`);
+                let userInfo: IUser = await apiService(`/api/users/id/${user.userid}`);
                 let userEmail = userInfo.email;
+                let userName = `${userInfo.firstName} ${userInfo.lastName}`;
                 setEmail(userEmail);
+                setName(userName);
             })()
         }
     }, [user]);
@@ -66,14 +69,13 @@ const ContactRequest = () => {
         <main className="min-vh-100 d-flex bg-deepred pt-5">
             <div className="py-3 mt-sm-5 mt-1 container bg-gold align-self-start col-md-6 rounded">
 
-            <div className="mx-auto mb-2 row">
-                    <FontAwesomeIcon icon={faComment} size='2x' />
-                    <label htmlFor="name" className="ml-2 form-label">Name (optional)</label>
-                </div>
-                <input onChange={(e) => setName(e.currentTarget.value)} className="mb-4 form-control" type="text" name="name" id="nameInput" />
-
                 {!user.userid ? (
                     <>
+                        <div className="mx-auto mb-2 row">
+                            <FontAwesomeIcon icon={faComment} size='2x' />
+                            <label htmlFor="name" className="ml-2 form-label">Name (optional)</label>
+                        </div>
+                        <input onChange={(e) => setName(e.currentTarget.value)} className="mb-4 form-control" type="text" name="name" id="nameInput" />
                         <div className="mx-auto mb-2 row">
                             <FontAwesomeIcon icon={faEnvelope} size='2x' />
                             <label htmlFor="email" className="ml-2 form-label">Email (required)</label>
@@ -85,7 +87,7 @@ const ContactRequest = () => {
                         </div>
                         <button onClick={() => setEmailNote(!emailNote)} className="btn btn-info p-0 mb-4" style={{fontSize: 14}}>Note on emails</button>
                         {emailNote ? (
-                            <div className="mt-n4 position-absolute bg-light rounded border border-info">
+                            <div className="mt-n4 mr-3 pt-2 px-2 position-absolute bg-light rounded border border-info">
                                 <p>Our 3rd party email service requires a valid email address in order for us to receive messages sent from here even if you don't request a response. 
                                     We're sorry for any inconvenience.</p>
                             </div>

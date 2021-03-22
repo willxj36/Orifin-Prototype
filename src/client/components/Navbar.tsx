@@ -16,12 +16,12 @@ const Navbar = () => {
     const [userFirstName, setUserFirstName] = useState<string>('');
 
     useEffect(() => {
-        if(!user.userid) return;
-        (async () => {
-            let userInfo: IUser = await apiService(`/api/users/${user.userid}`);
-            let firstName = userInfo.firstName;
-            setUserFirstName(firstName);
-        })()
+        if(user.userid) {
+            (async () => {
+                let userInfo: IUser = await apiService(`/api/users/id/${user.userid}`);
+                setUserFirstName(userInfo.firstName);
+            })();
+        }
     }, [user])
     
     const [menu, setMenu] = useState<boolean>(false);
@@ -47,7 +47,7 @@ const Navbar = () => {
                 <div>
                     <FontAwesomeIcon icon={faBars} size="2x" onClick={() => setMenu(!menu)} role="button" className="ml-auto my-auto" />
                 
-                    {menu ? (
+                    {menu && (
                     <div className="d-flex justify-content-end">
                         <ul className="position-absolute col-xl-2 col-md-4 col-sm-6 mr-n3 list-group">
                             <Link onClick={() => setMenu(false)} to='/'>
@@ -74,11 +74,11 @@ const Navbar = () => {
                                 <li className="list-group-item text-right text-white bg-dark">Contact Request</li>
                             </Link>
 
-                            {user.userid ? <li onClick={logout} className="list-group-item text-right text-white bg-dark" role="button">Logout</li> : null}
+                            {user.userid && <li onClick={logout} className="list-group-item text-right text-white bg-dark" role="button">Logout</li>}
 
                         </ul>
                     </div>
-                    ) : null}
+                    )}
                 </div>
             </header>
         </>

@@ -12,3 +12,20 @@ export interface IUser {
     role?: string,
     _created?: Date
 }
+
+export interface IDbResponse {
+    fieldCount: number,
+    affectedRows: number,
+    insertId: number,
+    serverStatus: number,
+    warningCount: number,
+    message: string,
+    protocol41: boolean,
+    changedRows: number
+}
+
+export interface Payload {
+    [key: string]: any,
+    userid?: number,
+    unique?: string
+}

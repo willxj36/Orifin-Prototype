@@ -1,13 +1,32 @@
 import * as express from 'express';
 
+import db from '../../db';
+import { hashPass } from '../../../utils/security/passwords';
+import { createToken } from '../../../utils/security/tokens';
+
+import { IUser } from '../../../utils/models';
+
 const router = express.Router();
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
     try {
-        // register logic
+        let user: IUser = req.body;
+        user.password = hashPass(req.body.password)
+        let response: any = await db.Users.post(req.body);
+        if(response.affectedRows) {
+            let token = await createToken({userid: response.insertId});
+            res.json({
+                message: 'Registration successful',
+                token,
+                roleid: 1,
+                userid: response.insertId
+            });
+        } else {
+            res.json({message: 'Email is already registered'});
+        }
     } catch (e) {
         console.log(e);
-        res.status(500).json({message: 'Failed to register user, please try again'});
+        res.sendStatus(500);
     }
 })
 

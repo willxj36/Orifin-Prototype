@@ -1,13 +1,21 @@
 import * as express from 'express';
+import * as passport from 'passport';
+
+import { createToken } from '../../../utils/security/tokens';
 
 const router = express.Router();
 
-router.post('/', (req, res) => {
+router.post('/', passport.authenticate('local'), async (req: any, res) => {
     try {
-        //login logic here
-    } catch (e) {
+        let token = await createToken({ userid: req.user.id });
+        res.json({
+            token,
+            roleid: req.user.roleid,
+            userid: req.user.id,
+        })
+    } catch(e) {
         console.log(e);
-        res.status(500).json({message: 'There was a problem logging in. Please try again.'});
+        res.sendStatus(500);
     }
 })
 

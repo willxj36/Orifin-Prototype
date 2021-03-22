@@ -2,7 +2,8 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router';
-import apiService from '../../utils/apiService';
+
+import apiService, { SetAccessToken } from '../../utils/apiService';
 import { UserContext } from '../components/ContextProvider';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -13,23 +14,41 @@ const Login = () => {
 
     const history = useHistory();
 
-    const [user,] = useContext(UserContext);
+    const [user, setUser] = useContext(UserContext);
 
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
+    const [btnDisable, setBtnDisable] = useState<boolean>(true);
+
     useEffect(() => {
         if (user.userid) {
-            history.push('/member-home');
+            history.push(`/member-home/${user.userid}`);
         }
     }, [user])
 
+    useEffect(() => {
+        if(email && password) {
+            setBtnDisable(false);
+        } else {
+            setBtnDisable(true);
+        }
+    }, [email, password]);
+
     const handleSubmit = async () => {
+        setBtnDisable(true);
         let res = await apiService('auth/login', 'POST', {
             email,
             password
         });
-        //need more logic here, but need to set up server and DB to do so
+        if(res) {
+            SetAccessToken(res.token, {userid: res.userid, role: res.roleid});
+            setUser({userid: res.userid, role: res.roleid});
+            history.push(`/member-home/${res.userid}`);
+        } else {
+            alert('Something went wrong, please try again');
+            setBtnDisable(false);
+        }
     }
 
     return (
@@ -46,7 +65,7 @@ const Login = () => {
                 </div>
                 <input onChange={(e) => setPassword(e.currentTarget.value)} className="mb-4 form-control" type="password" name="password" id="passwordInput" />
                 <div className="row justify-content-center">
-                    <button onClick={handleSubmit} className="px-5 btn btn-lg btn-dark">Log In</button>
+                    <button onClick={handleSubmit} className="px-5 btn btn-lg btn-dark" disabled={btnDisable}>Log In</button>
                 </div>
                 <div className="mb-3 mt-4 row justify-content-center">
                     <Link className="btn btn-outline-darkinfo" to="/memberships">Not a member yet? Check out our membership packages!</Link>

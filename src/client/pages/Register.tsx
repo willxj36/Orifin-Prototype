@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router';
-import apiService from '../../utils/apiService';
+import apiService, { SetAccessToken } from '../../utils/apiService';
 import { UserContext } from '../components/ContextProvider';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,7 +11,7 @@ const Register = () => {
 
     const history = useHistory();
 
-    const [user,] = useContext(UserContext);
+    const [user, setUser] = useContext(UserContext);
 
     const [firstName, setFirstName] = useState<string>('');             //states relevant to identifying info
     const [lastName, setLastName] = useState<string>('');
@@ -27,7 +27,7 @@ const Register = () => {
 
     useEffect(() => {
         if(user.userid) {      //makes it so that a logged in user can't visit the page, creating token issues if they also submitted a new registration
-            history.push('/member-home');
+            history.push(`/member-home/${user.userid}`);
         }
     }, [user]);
 
@@ -60,18 +60,24 @@ const Register = () => {
             if(!email.match(emailReg)) {
                 alert('Please enter a valid email address');
             } else {
-                let emailExists = await apiService(`api/users/email/${email}`);
-                if(emailExists) {
-                    alert('Email is already registered');   //doesn't re-enable submit button until the email field is changed
+                let res = await apiService('auth/register', 'POST', {
+                    firstName,
+                    lastName,
+                    email,
+                    password
+                });
+                if(res) {
+                    if(res.token) {
+                        SetAccessToken(res.token, {userid: res.userid, role: res.roleid});
+                        setUser({userid: res.userid, role: res.roleid});
+                        alert(res.message);
+                        history.push(`/member-home/${res.userid}`);     //push new user to their new specific member home page
+                    } else {
+                        alert(res.message);     //if no res.token, it means that request went through but affectedRows is 0 indicating email is already registered
+                    }
                 } else {
-                    let res = await apiService('auth/register', 'POST', {
-                        firstName,
-                        lastName,
-                        email,
-                        password
-                    });
-                    //success or failure logic
-                    history.push('/member-home');       //send new user to their "profile page"
+                    alert('An error occurred trying to register account. Please try again');
+                    setBtnDisable(false);
                 }
             }
         } catch(e) {
@@ -109,7 +115,7 @@ const Register = () => {
                     <label htmlFor="password" className="ml-2 form-label">Password</label>
                 </div>
                 <input onChange={(e) => setPassword(e.currentTarget.value)} className="mb-4 form-control" type={showPass ? 'text' : 'password'} name="password" id="passwordInput" />
-                {passInvalid ? (
+                {passInvalid && (
                     <div className="mt-n4 px-2 position-absolute bg-white rounded border border-danger">
                         <p>Password must contain</p>
                             <ul>
@@ -120,7 +126,7 @@ const Register = () => {
                                 <li>No spaces</li>
                             </ul>
                     </div>
-                ) : null}
+                )}
 
                 <div className="mx-auto mb-0 row">
                     <FontAwesomeIcon icon={faKey} size='2x' />
@@ -128,7 +134,7 @@ const Register = () => {
                     <FontAwesomeIcon onClick={() => setShowPass(!showPass)} icon={showPass ? faEyeSlash : faEye} size='2x' role='button' className="ml-auto" />
                     <p className="ml-2">{showPass ? 'Hide' : 'Show'} Passwords</p>
                 </div>
-                <input onChange={(e) => setConfirmPass(e.currentTarget.value)} className={`mb-5 form-control ${noMatch ? 'border-danger' : null}`} type={showPass ? 'text' : 'password'} name="confirmPassword" id="confirmPasswordInput" />
+                <input onChange={(e) => setConfirmPass(e.currentTarget.value)} className={`mb-5 form-control ${noMatch && 'border-danger'}`} type={showPass ? 'text' : 'password'} name="confirmPassword" id="confirmPasswordInput" />
 
                 <div className="row justify-content-center">
                     <button onClick={handleSubmit} className="mb-3 px-5 btn btn-lg btn-dark" disabled={btnDisable}>Register</button>
