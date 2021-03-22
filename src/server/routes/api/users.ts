@@ -6,6 +6,17 @@ import { IUser } from '../../../utils/models';
 
 const router = express.Router();
 
+router.get('/check-email/:email', async (req, res) => {
+    let email = req.params.email;
+    try {
+        let [emailCheck] = await db.Users.checkEmail(email);
+        res.json({emailCheck});
+    } catch (e) {
+        console.log(e);
+        res.status(500).json({message: 'Email check failed'});
+    }
+})
+
 router.get('/:column?/:value?', async (req, res) => {
     let column = req.params.column;
     let value = req.params.value;

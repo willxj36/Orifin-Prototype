@@ -60,24 +60,25 @@ const Register = () => {
             if(!email.match(emailReg)) {
                 alert('Please enter a valid email address');
             } else {
-                let res = await apiService('auth/register', 'POST', {
-                    firstName,
-                    lastName,
-                    email,
-                    password
-                });
-                if(res) {
-                    if(res.token) {
+                let emailCheck = await apiService(`/api/users/check-email/${email}`);   //endpoint used only to see if user with this email exists in DB already
+                if(emailCheck.emailCheck) {
+                    alert('Email is already registered');
+                } else {
+                    let res = await apiService('auth/register', 'POST', {
+                        firstName,
+                        lastName,
+                        email,
+                        password
+                    });
+                    if(res) {
                         SetAccessToken(res.token, {userid: res.userid, role: res.roleid});
                         setUser({userid: res.userid, role: res.roleid});
                         alert(res.message);
                         history.push(`/member-home/${res.userid}`);     //push new user to their new specific member home page
                     } else {
-                        alert(res.message);     //if no res.token, it means that request went through but affectedRows is 0 indicating email is already registered
+                        alert('An error occurred trying to register account. Please try again');
+                        setBtnDisable(false);
                     }
-                } else {
-                    alert('An error occurred trying to register account. Please try again');
-                    setBtnDisable(false);
                 }
             }
         } catch(e) {
