@@ -1,13 +1,20 @@
 import * as express from 'express';
+import * as passport from 'passport';
+import db from '../../db';
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
+router.get('/', passport.authenticate('bearer'), async (req: any, res) => {
     try {
-        //logout logic
+        let response: any = await db.AccessTokens.deleter(req.user.id)
+        if(response.affectedRows) {
+            res.status(200).json({message: 'Logged out successfully!'});
+        } else {
+            res.status(200).json({message: 'Something went wrong, please try again'});
+        }
     } catch (e) {
         console.log(e);
-        res.status(500).json({message: 'A problem occurred logging you out, please try again'});
+        res.json({message: e});
     }
 })
 

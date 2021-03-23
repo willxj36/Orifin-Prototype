@@ -27,6 +27,7 @@ CREATE TABLE users (
 CREATE TABLE roles (
 	`id` INT NOT NULL,
     `role` VARCHAR(25) NOT NULL,
+    `price` DECIMAL(3,2) NOT NULL DEFAULT '0.00',
     PRIMARY KEY (`id`)
 );
 
@@ -39,4 +40,22 @@ CREATE TABLE accesstokens (
     CONSTRAINT `fk_userid`
     FOREIGN KEY (`userid`)
     REFERENCES `users` (`id`)
+);
+
+CREATE TABLE permissions (
+	`id` INT NOT NULL AUTO_INCREMENT,
+    `permission` VARCHAR(255) NOT NULL,
+    PRIMARY KEY (`id`)
+);
+
+CREATE TABLE rolePermissions (
+	`roleid` INT NOT NULL,
+    `permissionid` INT NOT NULL,
+    PRIMARY KEY (`roleid`, `permissionid`),
+    CONSTRAINT `fk_roleid`
+    FOREIGN KEY (`roleid`)
+    REFERENCES `roles` (`id`),
+    CONSTRAINT `fk_permissionid`
+    FOREIGN KEY (`permissionid`)
+    REFERENCES `permissions` (`id`)
 );

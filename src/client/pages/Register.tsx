@@ -61,7 +61,7 @@ const Register = () => {
                 alert('Please enter a valid email address');
             } else {
                 let emailCheck = await apiService(`/api/users/check-email/${email}`);   //endpoint used only to see if user with this email exists in DB already
-                if(emailCheck.emailCheck) {
+                if(emailCheck) {
                     alert('Email is already registered');
                 } else {
                     let res = await apiService('auth/register', 'POST', {
@@ -115,7 +115,10 @@ const Register = () => {
                     <FontAwesomeIcon icon={faKey} size='2x' />
                     <label htmlFor="password" className="ml-2 form-label">Password</label>
                 </div>
-                <input onChange={(e) => setPassword(e.currentTarget.value)} className="mb-4 form-control" type={showPass ? 'text' : 'password'} name="password" id="passwordInput" />
+                <div className="row mx-auto justify-content-end">
+                    <input onChange={(e) => setPassword(e.currentTarget.value)} className="mb-4 form-control" type={showPass ? 'text' : 'password'} name="password" id="passwordInput" />
+                    <FontAwesomeIcon onClick={() => setShowPass(!showPass)} icon={showPass ? faEyeSlash : faEye} size='2x' role='button' className="position-absolute mr-2 mt-1" />
+                </div>
                 {passInvalid && (
                     <div className="mt-n4 px-2 position-absolute bg-white rounded border border-danger">
                         <p>Password must contain</p>
@@ -129,11 +132,9 @@ const Register = () => {
                     </div>
                 )}
 
-                <div className="mx-auto mb-0 row">
+                <div className="mx-auto mb-2 row">
                     <FontAwesomeIcon icon={faKey} size='2x' />
                     <label htmlFor="confirmPassword" className="ml-2 form-label">Confirm Password</label>
-                    <FontAwesomeIcon onClick={() => setShowPass(!showPass)} icon={showPass ? faEyeSlash : faEye} size='2x' role='button' className="ml-auto" />
-                    <p className="ml-2">{showPass ? 'Hide' : 'Show'} Passwords</p>
                 </div>
                 <input onChange={(e) => setConfirmPass(e.currentTarget.value)} className={`mb-5 form-control ${noMatch && 'border-danger'}`} type={showPass ? 'text' : 'password'} name="confirmPassword" id="confirmPasswordInput" />
 

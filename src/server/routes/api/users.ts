@@ -10,7 +10,7 @@ router.get('/check-email/:email', async (req, res) => {
     let email = req.params.email;
     try {
         let [emailCheck] = await db.Users.checkEmail(email);
-        res.json({emailCheck});
+        res.json(emailCheck);
     } catch (e) {
         console.log(e);
         res.status(500).json({message: 'Email check failed'});

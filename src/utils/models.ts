@@ -1,6 +1,6 @@
 export interface IUserLocal {
     userid?: number,
-    role?: string,
+    role?: number,
 }
 
 export interface IUser {
@@ -28,4 +28,11 @@ export interface Payload {
     [key: string]: any,
     userid?: number,
     unique?: string
+}
+
+export interface IMembership {
+    id: number,
+    role: string,
+    info?: string[],
+    price: number
 }

@@ -1,19 +1,19 @@
 import { Query } from '../';
 import { IUser } from '../../../utils/models';
 
-const getAll = async () => Query('SELECT * FROM users');
+const getAll = async () => await Query('SELECT * FROM users');
 
-const checkEmail = async(email: string) => Query('SELECT email FROM users WHERE email LIKE ?', [email]);
+const checkEmail = async(email: string) => await Query('SELECT email FROM users WHERE email LIKE ?', [email]);
 
-const findOne = async(column: string, value: string | number) => Query('SELECT * FROM users WHERE ?? LIKE ? LIMIT 1', [column, value]);
+const findOne = async(column: string, value: string | number) => await Query('SELECT * FROM users WHERE ?? LIKE ? LIMIT 1', [column, value]);
 
-const findBy = async(column: string, value: string | number) => Query('SELECT * FROM users WHERE ?? LIKE ?', [column, value]);
+const findBy = async(column: string, value: string | number) => await Query('SELECT * FROM users WHERE ?? LIKE ?', [column, value]);
 
-const post = async(user: IUser) => Query('INSERT INTO users SET ?', [user]);
+const post = async(user: IUser) => await Query('INSERT INTO users SET ?', [user]);
 
-const put = async(user: IUser, id: number) => Query('UPDATE users SET ? WHERE id = ?', [user, id]);
+const put = async(user: IUser, id: number) => await Query('UPDATE users SET ? WHERE id = ?', [user, id]);
 
-const deleter = async(id: number) => Query('DELETE FROM users WHERE id = ?', [id]);
+const deleter = async(id: number) => await Query('DELETE FROM users WHERE id = ?', [id]);
 
 export default {
     getAll,

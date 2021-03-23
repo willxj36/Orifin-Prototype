@@ -8,7 +8,7 @@ import { UserContext } from '../components/ContextProvider';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
-import { faKey } from '@fortawesome/free-solid-svg-icons';
+import { faKey, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 const Login = () => {
 
@@ -18,6 +18,7 @@ const Login = () => {
 
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [showPass, setShowPass] = useState<boolean>(false);
 
     const [btnDisable, setBtnDisable] = useState<boolean>(true);
 
@@ -63,7 +64,10 @@ const Login = () => {
                     <FontAwesomeIcon icon={faKey} size='2x' />
                     <label htmlFor="password" className="ml-2 form-label">Password</label>
                 </div>
-                <input onChange={(e) => setPassword(e.currentTarget.value)} className="mb-4 form-control" type="password" name="password" id="passwordInput" />
+                <div className="row mx-auto justify-content-end">
+                    <input onChange={(e) => setPassword(e.currentTarget.value)} className="mb-4 form-control" type={showPass ? 'text' : 'password'} name="password" id="passwordInput" />
+                    <FontAwesomeIcon onClick={() => setShowPass(!showPass)} icon={showPass ? faEyeSlash : faEye} size='2x' role='button' className="position-absolute mr-2 mt-1" />
+                </div>
                 <div className="row justify-content-center">
                     <button onClick={handleSubmit} className="px-5 btn btn-lg btn-dark" disabled={btnDisable}>Log In</button>
                 </div>

@@ -4,6 +4,7 @@ import config from '../config';
 
 import Users from './queries/users';
 import AccessTokens from './queries/accesstokens';
+import Roles from './queries/roles';
 
 export const pool = mysql.createPool(config.mysql);
 
@@ -17,5 +18,6 @@ export const Query = (query: string, values?: any) => {
 
 export default {
     Users,
-    AccessTokens
+    AccessTokens,
+    Roles
 }

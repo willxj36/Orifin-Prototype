@@ -56,7 +56,6 @@ const ContactRequest = () => {
                 };
                 let response = await apiService('/api/contact', 'POST', data);
                 alert(response.message);
-                setBtnDisable(false);
             } catch (e) {
                 console.log(e);
                 alert('Email failed to send, please try again');
@@ -81,10 +80,7 @@ const ContactRequest = () => {
                             <label htmlFor="email" className="ml-2 form-label">Email (required)</label>
                         </div>
                         <input onChange={(e) => setEmail(e.currentTarget.value)} className="mb-2 form-control" type="email" name="email" id="emailInput" />
-                        <div className="mx-auto mb-2 form-check">
-                            <input onChange={() => setResReq(!resReq)} checked={resReq} type="checkbox" name="responseRequest" id="resReqCheck" className="form-check-input"/>
-                            <label htmlFor="responseRequest" className="form-check-label">Request a response to this message?</label>
-                        </div>
+                        
                         <button onClick={() => setEmailNote(!emailNote)} className="btn btn-info p-0 mb-4" style={{fontSize: 14}}>Note on emails</button>
                         {emailNote ? (
                             <div className="mt-n4 mr-3 pt-2 px-2 position-absolute bg-light rounded border border-info">
@@ -106,6 +102,11 @@ const ContactRequest = () => {
                     <label htmlFor="message" className="ml-2 form-label">Message</label>
                 </div>
                 <textarea onChange={(e) => setMessage(e.currentTarget.value)} name="message" id="messageInput" cols={30} rows={10} className="form-control mb-4" />
+
+                <div className="mx-auto mb-4 form-check">
+                    <input onChange={() => setResReq(!resReq)} checked={resReq} type="checkbox" name="responseRequest" id="resReqCheck" className="form-check-input"/>
+                    <label htmlFor="responseRequest" className="form-check-label">Request a response to this message?</label>
+                </div>
 
                 <div className="row justify-content-center">
                     <button onClick={handleSubmit} className="px-5 btn btn-lg btn-dark" disabled={btnDisable}>Send</button>

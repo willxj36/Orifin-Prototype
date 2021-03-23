@@ -12,7 +12,7 @@ const Navbar = () => {
 
     const history = useHistory();
 
-    const [user,] = useContext(UserContext);
+    const [user, setUser] = useContext(UserContext);
     const [userFirstName, setUserFirstName] = useState<string>('');
 
     useEffect(() => {
@@ -21,6 +21,8 @@ const Navbar = () => {
                 let userInfo: IUser = await apiService(`/api/users/id/${user.userid}`);
                 setUserFirstName(userInfo.firstName);
             })();
+        } else {
+            setUserFirstName('');
         }
     }, [user])
     
@@ -28,9 +30,16 @@ const Navbar = () => {
 
     const logout = async () => {
         setMenu(false);
+        localStorage.removeItem('userid');
+        localStorage.removeItem('role');
+        localStorage.removeItem('token');
         let res = await apiService('/auth/logout');
         if(res) {
-            alert('Logout successful');
+            setUser({
+                userid: null,
+                role: null
+            });
+            alert(res.message);
             history.push('/');
         } else {
             alert('Something went wrong, please try again');
