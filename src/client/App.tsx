@@ -22,13 +22,13 @@ const App = () => {
 				<Switch>
 					<Route exact path='/' component={Home} />
 					<Route path='/login' component={Login} />
-					<Route path='/register/:id?' component={Register} />
+					<Route path='/register/:id?/:period?' component={Register} />
 					<Route path='/member-home/:id' component={MemberHome} />
 					<Route path='/memberships' component={Memberships} />
 					<Route path='/calender' component={Calendar} />
 					<Route path='/reservation' component={Reservation} />
 					<Route path='/contact-request' component={ContactRequest} />
-					<Route path='/payment/:product/:id' component={Payment} />
+					<Route path='/payment/:product/:id/:period?' component={Payment} />
 				</Switch>
 			</BrowserRouter>
 		</ContextProvider>

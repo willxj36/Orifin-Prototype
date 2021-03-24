@@ -8,9 +8,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faKey, faUserTag, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { IMembership } from '../../utils/models';
 
+interface IRegisterParams {
+    id: string,
+    period: string
+}
+
 const Register = () => {
 
-    const membershipId: any = useParams();                              //param is only passed in if coming from memberships page to indicate which membership chosen
+    const membershipId: number = Number(useParams<IRegisterParams>().id);      //param is only passed in if coming from memberships page to indicate which membership/period chosen
+    const period: string = useParams<IRegisterParams>().period;
     const [membership, setMembership] = useState<IMembership>();
 
     const history = useHistory();
@@ -59,7 +65,7 @@ const Register = () => {
 
     useEffect(() => {       //uses param to fetch membership info
         (async () => {
-            let membership: IMembership = await apiService(`/api/roles/${membershipId.id}`);
+            let membership: IMembership = await apiService(`/api/roles/${membershipId}`);
             setMembership(membership);
         })()
     }, [membershipId]);
@@ -85,7 +91,7 @@ const Register = () => {
                         SetAccessToken(res.token, {userid: res.userid, role: res.roleid});
                         setUser({userid: res.userid, role: res.roleid});
                         if(membershipId) {
-                            history.push(`/payment/membership/${membershipId.id}`);    //push new user to the payment page for membership chosen
+                            history.push(`/payment/membership/${membershipId}/${period}`);    //push new user to the payment page for membership chosen
                             alert(res.message);
                         } else {
                             history.push(`/member-home/${res.userid}`);     //push new user to their new specific member home page if not buying membership
@@ -109,10 +115,10 @@ const Register = () => {
 
             <div className="py-3 mt-5 bg-gold container align-self-start col-md-6 rounded">
 
-                {membershipId.id && (
+                {membershipId && (
                     <div className="mb-3 text-center bg-gold">
                         <h5>Register your account for your new membership!</h5>
-                        <p className="mt-3">Registering for <b><i>{membership?.role} -- ${membership?.price}</i></b></p>
+                        <p className="mt-3">Registering for <b><i>{membership?.role} -- ${period === 'monthly' ? `${membership?.monthPrice}/month` : `${membership?.yearPrice}/year`}</i></b></p>
                     </div>
                 )}
 

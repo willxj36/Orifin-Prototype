@@ -49,7 +49,12 @@ const MembershipCard: React.FC<IMembershipCardProps> = ({ membership }) => {
                 </div>
             </div>
             <div className="card-footer d-flex justify-content-center">
-                <Link to={!user.userid ? `/register/${membership.id}` : `/payment/membership/${membership.id}`}><button className="btn btn-primary" disabled={currentMember}>Buy Now -- ${membership.price}</button></Link>
+                <Link to={!user.userid ? `/register/${membership.id}/monthly` : `/payment/membership/${membership.id}/monthly`}>
+                    <button className="btn btn-primary" disabled={currentMember}>Buy Monthly -- ${membership.monthPrice}</button>
+                </Link>
+                <Link to={!user.userid ? `/register/${membership.id}/yearly` : `/payment/membership/${membership.id}/yearly`}>
+                    <button className="btn btn-primary" disabled={currentMember}>Buy Full Year -- ${membership.yearPrice}</button>
+                </Link>
             </div>
         </div>
     )

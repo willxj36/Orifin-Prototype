@@ -34,5 +34,6 @@ export interface IMembership {
     id: number,
     role: string,
     info?: string[],
-    price: number
+    monthPrice: number,
+    yearPrice: number
 }
