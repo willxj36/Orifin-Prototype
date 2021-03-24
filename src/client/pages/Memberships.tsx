@@ -21,7 +21,7 @@ const Memberships = () => {
             <div className="container pt-5">
                 <div className="row mx-n5">
                     {memberships?.map(membership => {
-                        if(membership.id < 8 && membership.id != 1) return <MembershipCard key={membership.id} membership={membership} />
+                        if(membership.id < 90 && membership.id != 1) return <MembershipCard key={membership.id} membership={membership} />
                     })}
                 </div>
             </div>
