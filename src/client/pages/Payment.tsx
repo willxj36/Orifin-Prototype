@@ -6,10 +6,6 @@ const Payment = () => {
 
     const params: any = useParams();
 
-    useEffect(() => {
-        console.log(params);
-    }, [params]);
-
     return(
         <div className="min-vh-100 bg-deepred">
             <div className="container pt-5">

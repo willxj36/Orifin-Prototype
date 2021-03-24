@@ -84,11 +84,12 @@ const Register = () => {
                     if(res) {
                         SetAccessToken(res.token, {userid: res.userid, role: res.roleid});
                         setUser({userid: res.userid, role: res.roleid});
-                        alert(res.message);
                         if(membershipId) {
                             history.push(`/payment/membership/${membershipId.id}`);    //push new user to the payment page for membership chosen
+                            alert(res.message);
                         } else {
                             history.push(`/member-home/${res.userid}`);     //push new user to their new specific member home page if not buying membership
+                            alert(res.message);
                         }
                     } else {
                         alert('An error occurred trying to register account. Please try again');
