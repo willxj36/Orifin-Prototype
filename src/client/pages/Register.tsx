@@ -1,13 +1,17 @@
 import * as React from 'react';
 import { useState, useEffect, useContext } from 'react';
-import { useHistory } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import apiService, { SetAccessToken } from '../../utils/apiService';
 import { UserContext } from '../components/ContextProvider';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faKey, faUserTag, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { IMembership } from '../../utils/models';
 
 const Register = () => {
+
+    const membershipId: any = useParams();                              //param is only passed in if coming from memberships page to indicate which membership chosen
+    const [membership, setMembership] = useState<IMembership>();
 
     const history = useHistory();
 
@@ -53,6 +57,13 @@ const Register = () => {
         }
     }, [firstName, lastName, email, password, confirmPass, noMatch, passInvalid]);
 
+    useEffect(() => {       //uses param to fetch membership info
+        (async () => {
+            let membership: IMembership = await apiService(`/api/roles/${membershipId.id}`);
+            setMembership(membership);
+        })()
+    }, [membershipId]);
+
     const handleSubmit = async () => {
         setBtnDisable(true);                //disable button to prevent multiple submits
         try{
@@ -64,7 +75,7 @@ const Register = () => {
                 if(emailCheck) {
                     alert('Email is already registered');
                 } else {
-                    let res = await apiService('auth/register', 'POST', {
+                    let res = await apiService('/auth/register', 'POST', {
                         firstName,
                         lastName,
                         email,
@@ -74,7 +85,11 @@ const Register = () => {
                         SetAccessToken(res.token, {userid: res.userid, role: res.roleid});
                         setUser({userid: res.userid, role: res.roleid});
                         alert(res.message);
-                        history.push(`/member-home/${res.userid}`);     //push new user to their new specific member home page
+                        if(membershipId) {
+                            history.push(`/payment/membership/${membershipId.id}`);    //push new user to the payment page for membership chosen
+                        } else {
+                            history.push(`/member-home/${res.userid}`);     //push new user to their new specific member home page if not buying membership
+                        }
                     } else {
                         alert('An error occurred trying to register account. Please try again');
                         setBtnDisable(false);
@@ -92,6 +107,13 @@ const Register = () => {
         <main className="min-vh-100 d-flex bg-deepred pt-5">
 
             <div className="py-3 mt-5 bg-gold container align-self-start col-md-6 rounded">
+
+                {membershipId.id && (
+                    <div className="mb-3 text-center bg-gold">
+                        <h5>Register your account for your new membership!</h5>
+                        <p className="mt-3">Registering for <b><i>{membership?.role} -- ${membership?.price}</i></b></p>
+                    </div>
+                )}
 
                 <div className="mx-auto mb-2 row">
                     <FontAwesomeIcon icon={faUserTag} size='2x' />

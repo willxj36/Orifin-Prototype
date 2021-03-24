@@ -1,8 +1,10 @@
 import * as express from 'express';
+import * as passport from 'passport';
 
 import db from '../../db';
 
 import { IUser } from '../../../utils/models';
+import { isAdmin } from '../../middleware/requestHandlers';
 
 const router = express.Router();
 
@@ -17,32 +19,31 @@ router.get('/check-email/:email', async (req, res) => {
     }
 })
 
-router.get('/:column?/:value?', async (req, res) => {
+router.get('/:column/:value', async (req, res) => {
     let column = req.params.column;
     let value = req.params.value;
     try {
-        if(column) {
-            if(value) {
-                let [user]: any = await db.Users.findOne(column, value);
-                if(user) {
-                    delete user.password;
-                    res.send(user);
-                } else {
-                    res.sendStatus(204);
-                }
-            } else {
-                //db logic for grabbing all users but for only the one column mentioned
-                //may use for 'front desk' kind of use where all users info needed, but protecting sensitive info from employees without authorization to see it
-                //may not be needed, we'll see what logic is req'd
-            }
+        let [user]: any = await db.Users.findOne(column, value);
+        if(user) {
+            delete user.password;
+            res.send(user);
         } else {
-            let users: IUser[] = await db.Users.getAll();
-            users.forEach(user => delete user.password);
-            res.send(users);
+            res.sendStatus(204);
         }
     } catch (e) {
         console.log(e);
         res.status(500).json({message: 'User fetch failed, please try again'});
+    }
+})
+
+router.get('/', passport.authenticate('bearer'), isAdmin, async (req: any, res) => {
+    try {
+        let users: IUser[] = await db.Users.getAll();
+        users.forEach(user => delete user.password);
+        res.json(users);
+    } catch (e) {
+        console.log(e);
+        res.sendStatus(500);
     }
 })
 

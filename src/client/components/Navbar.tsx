@@ -48,7 +48,7 @@ const Navbar = () => {
 
     return(
         <>
-            <header className="navbar fixed-top" style={{background: 'linear-gradient(177deg, #FFD766FF, #FFD76688)'}}>
+            <header className="navbar fixed-top" style={{background: 'linear-gradient(177deg, #FFD766FF, #FFD766BB)'}}>
                 <Link to='/'>
                     <h3 className="my-auto text-dark">Logo</h3>
                 </Link>
@@ -64,7 +64,7 @@ const Navbar = () => {
                             </Link>
 
                             {user.userid ? (
-                            <Link onClick={() => setMenu(false)} to='/member-home'>
+                            <Link onClick={() => setMenu(false)} to={`/member-home/${user.userid}`}>
                                 <li className="list-group-item text-right text-white bg-dark">Member Home</li>
                             </Link>
                             ) : (
@@ -80,7 +80,7 @@ const Navbar = () => {
                                 <li className="list-group-item text-right text-white bg-dark">Calendar</li>
                             </Link> 
                             <Link onClick={() => setMenu(false)} to='/contact-request'>
-                                <li className="list-group-item text-right text-white bg-dark">Contact Request</li>
+                                <li className="list-group-item text-right text-white bg-dark">Contact Us</li>
                             </Link>
 
                             {user.userid && <li onClick={logout} className="list-group-item text-right text-white bg-dark" role="button">Logout</li>}

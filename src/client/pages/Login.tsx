@@ -47,8 +47,7 @@ const Login = () => {
             setUser({userid: res.userid, role: res.roleid});
             history.push(`/member-home/${res.userid}`);
         } else {
-            alert('Something went wrong, please try again');
-            setBtnDisable(false);
+            alert('Incorrect email or password, please check credentials and try again');
         }
     }
 
@@ -72,9 +71,9 @@ const Login = () => {
                     <button onClick={handleSubmit} className="px-5 btn btn-lg btn-dark" disabled={btnDisable}>Log In</button>
                 </div>
                 <div className="mb-3 mt-4 row justify-content-center">
-                    <Link className="btn btn-outline-darkinfo" to="/memberships">Not a member yet? Check out our membership packages!</Link>
-                    <p className="mx-5">or</p>
-                    <Link className="btn btn-outline-darkinfo" to='/register'>Register as a guest</Link>
+                    <Link className="pt-2 btn btn-outline-darkinfo" to="/memberships">Not a member yet? Check out our membership packages!</Link>
+                    <p className="mx-4 mt-2"><b>OR</b></p>
+                    <Link className="pt-2 btn btn-outline-darkinfo" to='/register'>Register as a guest</Link>
                 </div>
             </div>
 

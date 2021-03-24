@@ -24,15 +24,15 @@ const apiService = async <T = any>(uri: string, method: string = 'GET', body?: {
         const res = await fetch(uri, options);
 
         if (res.status === 500) {
-            throw new Error('Server Blew Up, probably');
+            throw new Error('Server problem; if you see this, please contact site admin');
         }
 
         if (res.status === 404) {
-            throw new Error('Prolly a path typo');
+            throw new Error('Path doesn\'t exist or has a typo');
         }
 
         if (res.status === 401) {
-            throw new Error('Not logged in or no permission to do that, dummy');
+            throw new Error('Forgot to log in or you\'re not allowed to do that');
         }
 
         if (res.ok) {
@@ -49,7 +49,7 @@ interface IOptions {
     [key: string]: any;
 }
 
-export const SetAccessToken = (token: string, user: {userid: undefined, role: 'guest'}) => {
+export const SetAccessToken = (token: string, user: {userid: number, role: number}) => {
     AccessToken = token;
     User = user;
 

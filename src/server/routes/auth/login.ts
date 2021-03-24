@@ -7,12 +7,16 @@ const router = express.Router();
 
 router.post('/', passport.authenticate('local'), async (req: any, res) => {
     try {
-        let token = await createToken({ userid: req.user.id });
-        res.json({
-            token,
-            roleid: req.user.roleid,
-            userid: req.user.id,
-        })
+        if(req.user) {
+            let token = await createToken({ userid: req.user.id });
+            res.json({
+                token,
+                roleid: req.user.roleid,
+                userid: req.user.id,
+            })
+        } else {
+            res.status(401);
+        }
     } catch(e) {
         console.log(e);
         res.sendStatus(500);

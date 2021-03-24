@@ -4,7 +4,9 @@ const Calendar = () => {
 
 
     return(
-        <div>Calendar</div>
+        <div className="min-vh-100 d-flex justify-content-center align-items-center bg-deepred">
+            <p className="display-3 text-white">Calendar Coming Soon</p>
+        </div>
     )
 }
 

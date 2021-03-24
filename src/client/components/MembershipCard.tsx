@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect, useContext } from 'react';
+import { Link } from 'react-router-dom';
 
 import apiService from '../../utils/apiService';
 import { IMembership } from '../../utils/models';
@@ -22,7 +23,6 @@ const MembershipCard: React.FC<IMembershipCardProps> = ({ membership }) => {
     }, [user]);
 
     useEffect(() => {
-        console.log(membership);
         (async () => {
             let info = await apiService(`/api/roles/permissions/${membership.id}`);
             setInfo(info);
@@ -36,7 +36,7 @@ const MembershipCard: React.FC<IMembershipCardProps> = ({ membership }) => {
                     Current Membership
                 </div>
             )}
-            <div className="card-header">
+            <div className="card-header d-flex justify-content-center">
                 <div className="card-title">
                     <h4>{membership.role}</h4>
                 </div>
@@ -48,8 +48,8 @@ const MembershipCard: React.FC<IMembershipCardProps> = ({ membership }) => {
                     </ul>
                 </div>
             </div>
-            <div className="card-footer">
-                <button className="btn btn-primary" disabled={currentMember}>${membership.price}</button>
+            <div className="card-footer d-flex justify-content-center">
+                <Link to={!user.userid ? `/register/${membership.id}` : `/payment/membership/${membership.id}`}><button className="btn btn-primary" disabled={currentMember}>Buy Now -- ${membership.price}</button></Link>
             </div>
         </div>
     )
