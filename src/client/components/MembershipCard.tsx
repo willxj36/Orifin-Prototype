@@ -30,7 +30,7 @@ const MembershipCard: React.FC<IMembershipCardProps> = ({ membership }) => {
     }, [membership]);
 
     return(
-        <div className={`card col-3 mx-4 bg-${currentMember ? 'transparentgray' : 'gold'}`}>
+        <div className={`card col-3 mx-4 my-3 bg-${currentMember ? 'transparentgray' : 'gold'}`}>
             {currentMember && (
                 <div className="position-absolute align-self-center my-5 p-2 rounded" style={{background: '#DDD', fontSize: 20}}>
                     Current Membership
@@ -38,7 +38,7 @@ const MembershipCard: React.FC<IMembershipCardProps> = ({ membership }) => {
             )}
             <div className="card-header d-flex justify-content-center">
                 <div className="card-title">
-                    <h4>{membership.role}</h4>
+                    <h2>{membership.role}</h2>
                 </div>
             </div>
             <div className="card-body">
@@ -48,12 +48,12 @@ const MembershipCard: React.FC<IMembershipCardProps> = ({ membership }) => {
                     </ul>
                 </div>
             </div>
-            <div className="card-footer d-flex justify-content-center">
+            <div className="card-footer d-flex flex-column align-items-center">
                 <Link to={!user.userid ? `/register/${membership.id}/monthly` : `/payment/membership/${membership.id}/monthly`}>
-                    <button className="btn btn-primary" disabled={currentMember}>Buy Monthly -- ${membership.monthPrice}</button>
+                    <button className="my-2 btn btn-primary" disabled={currentMember}>Buy Monthly -- ${membership.monthPrice}</button>
                 </Link>
                 <Link to={!user.userid ? `/register/${membership.id}/yearly` : `/payment/membership/${membership.id}/yearly`}>
-                    <button className="btn btn-primary" disabled={currentMember}>Buy Full Year -- ${membership.yearPrice}</button>
+                    <button className="my-2 btn btn-primary" disabled={currentMember}>Buy Full Year -- ${membership.yearPrice}</button>
                 </Link>
             </div>
         </div>
