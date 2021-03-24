@@ -9,9 +9,9 @@ const Home = () => {
             <div className="container col-11 pt-5">
 
                 <div className="row my-3">
-                    <div className="col-md-4">
+                    <div className="col-md-4 d-flex flex-column">
                         <h1 className="text-white">Welcome to the Arena</h1>
-                        <img className="rounded mt-3" src="./img/roman placeholder.jpg" alt="Placeholder Logo" style={{width: 400}} />
+                        <img className="rounded mt-3 flex-shrink-1" src="./img/roman placeholder.jpg" alt="Placeholder Logo" style={{maxWidth: 400}} />
                     </div>
                     <div className="col-md-7 ml-5">
                         <p className="text-white mt-5" style={{fontSize: 30}}><b>Attention getting, informative but brief description of what it is and what it's about</b></p>
