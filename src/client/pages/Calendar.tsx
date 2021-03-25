@@ -10,8 +10,8 @@ const Calendar = () => {
     const [showDate, setShowDate] = useState<boolean>(false);
 
     useEffect(() => {
-        console.log(date);
-    }, [date]);
+        console.log();
+    }, []);
 
     const dateClick = (value: any) => {
         setDate(value);

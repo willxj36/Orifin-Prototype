@@ -32,7 +32,7 @@ const MembershipCard: React.FC<IMembershipCardProps> = ({ membership }) => {
         if(membership.role === 'Silver') setBackground('45deg, gray, silver');
         if(membership.role === 'Gold') setBackground('45deg, gold, lightyellow');
         if(membership.role === 'Platinum') setBackground('45deg, gray, white');
-        if(membership.role === 'Team') setBackground('45deg, blue, lightblue');
+        if(membership.role === 'Team') setBackground('45deg, maroon, #ffffa9');
     }, [membership]);
 
     return(
