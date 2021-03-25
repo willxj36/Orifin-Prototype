@@ -23,11 +23,11 @@ const Home = () => {
                 </div>
                 
                 <div className="row my-5 justify-content-center">
-                    <div className="col-md-5">
+                    <div className="col-lg-5">
                         <Link to='/memberships'>
                             <div className="my-2 card bg-gold">
                                 <div className="card-header">
-                                    <h1>Memberships</h1>
+                                    <h1 className="text-darkinfo">Memberships</h1>
                                 </div>
                                 <div className="card-body">
                                     <div className="row">
@@ -43,11 +43,11 @@ const Home = () => {
                         </Link>
                     </div>
 
-                    <div className="col-md-5">
+                    <div className="col-lg-5">
                         <Link to='/tournaments'>
                             <div className="my-2 card bg-gold">
                                 <div className="card-header">
-                                    <h1>Tournaments</h1>
+                                    <h1 className="text-darkinfo">Tournaments</h1>
                                 </div>
                                 <div className="card-body">
                                     <div className="row">
@@ -63,11 +63,11 @@ const Home = () => {
                         </Link>
                     </div>
 
-                    <div className="col-md-5">
+                    <div className="col-lg-5">
                         <Link to='/tournaments'>
                             <div className="my-2 card bg-gold">
                                 <div className="card-header">
-                                    <h1>More Cards tbd</h1>
+                                    <h1 className="text-darkinfo">More Cards tbd</h1>
                                 </div>
                                 <div className="card-body">
                                     <div className="row">
@@ -83,11 +83,11 @@ const Home = () => {
                         </Link>
                     </div>
 
-                    <div className="col-md-5">
+                    <div className="col-lg-5">
                         <Link to='/tournaments'>
                             <div className="my-2 card bg-gold">
                                 <div className="card-header">
-                                    <h1>More Cards tbd</h1>
+                                    <h1 className="text-darkinfo">More Cards tbd</h1>
                                 </div>
                                 <div className="card-body">
                                     <div className="row">
