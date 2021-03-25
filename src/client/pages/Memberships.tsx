@@ -18,8 +18,8 @@ const Memberships = () => {
 
     return(
         <div className="min-vh-100 bg-deepred pt-5">
-            <div className="container pt-5">
-                <div className="row mx-n5">
+            <div className="d-flex justify-content-center pt-5">
+                <div className="row justify-content-center mx-n5">
                     {memberships?.map(membership => {
                         if(membership.id < 90 && membership.id != 1) return <MembershipCard key={membership.id} membership={membership} />
                     })}

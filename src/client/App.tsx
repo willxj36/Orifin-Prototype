@@ -11,6 +11,7 @@ import Calendar from './pages/Calendar';
 import Reservation from './pages/Reservation';
 import ContactRequest from './pages/ContactRequest';
 import Payment from './pages/Payment';
+import Tournaments from './pages/Tournaments';
 import { ContextProvider } from './components/ContextProvider';
 
 const App = () => {
@@ -29,6 +30,7 @@ const App = () => {
 					<Route path='/reservation' component={Reservation} />
 					<Route path='/contact-request' component={ContactRequest} />
 					<Route path='/payment/:product/:id/:period?' component={Payment} />
+					<Route path='/tournaments' component={Tournaments} />
 				</Switch>
 			</BrowserRouter>
 		</ContextProvider>

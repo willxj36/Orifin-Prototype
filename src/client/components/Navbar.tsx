@@ -76,6 +76,9 @@ const Navbar = () => {
                             <Link onClick={() => setMenu(false)} to='/memberships'>
                                 <li className="list-group-item text-right text-white bg-dark">Memberships</li>
                             </Link>
+                            <Link onClick={() => setMenu(false)} to='/tournaments'>
+                                <li className="list-group-item text-right text-white bg-dark">Tournaments Page</li>
+                            </Link>
                             <Link onClick={() => setMenu(false)} to='/calender'>
                                 <li className="list-group-item text-right text-white bg-dark">Calendar</li>
                             </Link> 

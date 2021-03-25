@@ -3,7 +3,9 @@ $theme-colors: (
     'deepred': #400004,
     'gold': #FFD766,
     'darkinfo': #004488,
-    'transparentgray': #DDD8
+    'transparentgray': #DDD8,
+    'silver': #999,
+    'platinum': #CCC
 );
 
 @import '../../../node_modules/bootstrap/scss/bootstrap.scss';

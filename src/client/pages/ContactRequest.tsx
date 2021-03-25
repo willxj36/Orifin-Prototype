@@ -50,8 +50,9 @@ const ContactRequest = () => {
                 let data = {
                     email,
                     subject,
-                    text: `Response requested: ${resReq}; \n
-                        Name: ${name}; \n
+                    text: 
+                        `Response requested: ${resReq}
+                        Name: ${name}
                         Message: ${message}`
                 };
                 let response = await apiService('/api/contact', 'POST', data);
@@ -95,7 +96,12 @@ const ContactRequest = () => {
                     <FontAwesomeIcon icon={faComment} size='2x' />
                     <label htmlFor="subject" className="ml-2 form-label">Subject</label>
                 </div>
-                <input onChange={(e) => setSubject(e.currentTarget.value)} className="mb-4 form-control" type="text" name="subject" id="subjectInput" />
+                <select onChange={(e) => setSubject(e.currentTarget.value)} className="mb-4 form-control" name="subject" id="subjectInput">
+                    <option value="Tournament Info">Tournament Info</option>
+                    <option value="General Questions">General Questions</option>
+                    <option value="General Feedback">General Feedback</option>
+                    <option value="Website Feedback">Website Feedback</option>
+                </select>
 
                 <div className="mx-auto mb-2 row">
                     <FontAwesomeIcon icon={faComments} size='2x' />

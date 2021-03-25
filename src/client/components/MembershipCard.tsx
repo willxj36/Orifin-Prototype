@@ -17,6 +17,7 @@ const MembershipCard: React.FC<IMembershipCardProps> = ({ membership }) => {
 
     const [currentMember, setCurrentMember] = useState<boolean>(false);
     const [info, setInfo] = useState<string[]>([]);
+    const [background, setBackground] = useState<string>('gold');
 
     useEffect(() => {
         (user.role == membership.id) && setCurrentMember(true);
@@ -27,10 +28,15 @@ const MembershipCard: React.FC<IMembershipCardProps> = ({ membership }) => {
             let info = await apiService(`/api/roles/permissions/${membership.id}`);
             setInfo(info);
         })();
+        if(membership.role === 'Standard') setBackground('45deg, peru, rosybrown');
+        if(membership.role === 'Silver') setBackground('45deg, gray, silver');
+        if(membership.role === 'Gold') setBackground('45deg, gold, lightyellow');
+        if(membership.role === 'Platinum') setBackground('45deg, gray, white');
+        if(membership.role === 'Team') setBackground('45deg, blue, lightblue');
     }, [membership]);
 
     return(
-        <div className={`card col-3 mx-4 my-3 bg-${currentMember ? 'transparentgray' : 'gold'}`}>
+        <div className="card col-lg-3 col-md-5 mx-4 my-3" style={{background: `${currentMember ? '#DDD8' : `linear-gradient(${background})`}`}}>
             {currentMember && (
                 <div className="position-absolute align-self-center my-5 p-2 rounded" style={{background: '#DDD', fontSize: 20}}>
                     Current Membership
