@@ -37,3 +37,13 @@ export interface IMembership {
     monthPrice: number,
     yearPrice: number
 }
+
+export interface IReservation {
+    id?: number,
+    startTime: Date,
+    endTime: Date,
+    userId?: number,
+    type: string,
+    monitorId?: number,
+    headsetId?: number
+}

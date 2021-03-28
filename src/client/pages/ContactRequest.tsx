@@ -101,6 +101,7 @@ const ContactRequest = () => {
                     <option value="General Questions">General Questions</option>
                     <option value="General Feedback">General Feedback</option>
                     <option value="Website Feedback">Website Feedback</option>
+                    <option value="Tech Support">Tech Support</option>
                 </select>
 
                 <div className="mx-auto mb-2 row">

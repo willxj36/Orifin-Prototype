@@ -6,10 +6,12 @@ import contactRouter from './contact';
 import usersRouter from './users';
 import rolesRouter from './roles';
 import reservationsRouter from './reservations';
+import dbUpdateRouter from './dbUpdate';
 
 router.use('/contact', contactRouter);
 router.use('/users', usersRouter);
 router.use('/roles', rolesRouter);
 router.use('/reservations', reservationsRouter);
+router.use('/db-update', dbUpdateRouter);
 
 export default router;

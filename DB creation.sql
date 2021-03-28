@@ -59,3 +59,42 @@ CREATE TABLE rolePermissions (
     FOREIGN KEY (`permissionid`)
     REFERENCES `permissions` (`id`)
 );
+
+CREATE TABLE reservationAvailability (
+	`date` DATETIME NOT NULL,
+    `public` TINYINT NOT NULL DEFAULT '10',
+    `private` TINYINT NOT NULL DEFAULT '1',
+    `team` TINYINT NOT NULL DEFAULT '1',
+    `vr` TINYINT NOT NULL DEFAULT '5',
+    `fullTournament` TINYINT NOT NULL DEFAULT '1',
+    PRIMARY KEY (`date`)
+);
+
+CREATE TABLE reservations (
+	`id` INT NOT NULL AUTO_INCREMENT,
+    `startTime` DATETIME NOT NULL,
+    `endTime` DATETIME NOT NULL,
+    `userid` INT NOT NULL,
+    `type` VARCHAR(24) NOT NULL,
+    PRIMARY KEY (`id`)
+);
+
+CREATE TABLE monitors (
+	`id` INT NOT NULL,
+    PRIMARY KEY (`id`)
+);
+
+CREATE TABLE headsets (
+	`id` INT NOT NULL PRIMARY KEY
+);
+
+ALTER TABLE reservations
+	ADD COLUMN `monitorid` INT NULL,
+    ADD COLUMN `headsetid` INT NULL,
+    ADD CONSTRAINT `fk_monitorid`
+		FOREIGN KEY (`monitorid`)
+        REFERENCES `monitors` (`id`),
+	ADD CONSTRAINT `fk_headsetid`
+		FOREIGN KEY (`headsetid`)
+        REFERENCES `headsets` (`id`)
+	;
