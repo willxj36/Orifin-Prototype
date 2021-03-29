@@ -4,13 +4,25 @@ import { useState, useEffect } from 'react';
 import ReactCalendar from 'react-calendar';
 import TileContent from '../components/TileContent';
 
+import { IAvailability } from '../../utils/models';
+import apiService from '../../utils/apiService';
+
 const Calendar = () => {
 
     const [date, setDate] = useState<Date>(new Date());
     const [showDate, setShowDate] = useState<boolean>(false);
+    const [availability, setAvailability] = useState<IAvailability[]>();
 
     useEffect(() => {
-        console.log();
+        (async () => {
+            let avail: IAvailability[] = await apiService('/api/reservations');
+            avail.forEach(eachDate => {
+                let [noTime] = eachDate.date.split('T', 1);
+                let dateParts = noTime.split('-');
+                eachDate.date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+            })
+            setAvailability(avail);
+        })();
     }, []);
 
     const dateClick = (value: any) => {
@@ -28,7 +40,7 @@ const Calendar = () => {
                         value={date}
                         minDate={new Date()}
                         className="container h-100 rounded"
-                        tileContent={(value: any) => <TileContent date={value} />}
+                        tileContent={(value: any) => <TileContent date={value} availability={availability} />}
                     />
                 </div>
                 <div className={`text-white text-center ${showDate || 'd-none'}`}>

@@ -47,3 +47,12 @@ export interface IReservation {
     monitorId?: number,
     headsetId?: number
 }
+
+export interface IAvailability {
+    date: any,
+    public: number,
+    private: number,
+    team: number,
+    vr: number,
+    fullTournament: number
+}

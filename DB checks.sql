@@ -15,5 +15,5 @@ SELECT p.permission FROM permissions p
 DELETE FROM users WHERE id > 0;
 DELETE FROM accesstokens WHERE id > 0;
 DELETE FROM rolePermissions WHERE roleid > 0;
-DELETE FROM reservationAvailability WHERE date = '2021-04-28 00:00:00';
+INSERT INTO reservationAvailability SET date = '2021-04-29 00:00:00';
 DELETE FROM reservations WHERE id > 0;
