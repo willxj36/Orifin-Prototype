@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowCircleLeft } from '@fortawesome/free-solid-svg-icons';
 import ReactCalendar from 'react-calendar';
 import TileContent from '../components/TileContent';
 import SingleDateTable from '../components/SingleDateTable';
@@ -68,13 +70,15 @@ const Calendar = () => {
                     />
                 </div>
                 {showDate && (
-                    <div className={`col-sm-9 mx-auto ${showDate || 'd-none'}`}>
+                    <div className={`col-sm-9 mx-auto`}>
                         <div className="text-white row justify-content-start">
-                            <span className="">icon here</span>
-                            <p className="ml-2">Back to month view</p>
+                            <span className="row" role="button" onClick={() => setShowDate(false)}>
+                                <FontAwesomeIcon icon={faArrowCircleLeft} size="2x" />
+                                <p className="my-auto ml-3">Back to month view</p>
+                            </span>
                         </div>
                         <div className="row">
-                            <h1 onClick={() => setShowDate(false)} className="mx-auto text-center text-white">{date.toDateString()}</h1>
+                            <h1 className="mx-auto text-center text-white">{date.toDateString()}</h1>
                         </div>
                         <SingleDateTable date={date}/>
                     </div>

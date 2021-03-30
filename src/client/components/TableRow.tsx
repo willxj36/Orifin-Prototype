@@ -1,35 +1,38 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 import { IReservation } from '../../utils/models';
 
 interface ITableRowProps {
     hour: Date,
-    reservations: IReservation[]
+    reservations: IReservation[],
 }
 
 const TableRow: React.FC<ITableRowProps> = ({ hour, reservations }) => {
 
-    const [thisHourRes, setThisHourRes] = useState<IReservation[]>();
-    const [publicRes, setPublicRes] = useState<IReservation[]>();
-    const [privateRes, setPrivateRes] = useState<IReservation[]>();
-    const [teamRes, setTeamRes] = useState<IReservation[]>();
-    const [vrRes, setVrRes] = useState<IReservation[]>();
+    const [thisHourRes, setThisHourRes] = useState<IReservation[]>();   //cleans up full day res into just the res that affect this row's hour
+    const [publicRes, setPublicRes] = useState<IReservation[]>([]);     //separates out just res for public seats
+    const [privateRes, setPrivateRes] = useState<IReservation[]>([]);   //separates out private
+    const [teamRes, setTeamRes] = useState<IReservation[]>([]);         //team res
+    const [vrRes, setVrRes] = useState<IReservation[]>([]);             //vr res
+
+    const [disable, setDisable] = useState<boolean>(true);      //starts buttons disabled to prevent people clicking on a reservation button before arrays have loaded if it takes a minute
 
     useEffect(() => {
         if(!reservations || !hour) return;
-        reservations.forEach(res => {
+        reservations.forEach(res => {   //server converts these into strings, have to turn them back into dates here
             res.startTime = new Date(res.startTime);
             res.endTime = new Date(res.endTime);
         })
-        let thisHour = reservations.filter(res => res.startTime.getTime() <= hour.getTime() && res.endTime.getTime() > hour.getTime());
+        let thisHour = reservations.filter(res => res.startTime.getTime() <= hour.getTime() && res.endTime.getTime() > hour.getTime()); //ignores res that don't affect this row's hour
         setThisHourRes(thisHour);
     }, [reservations, hour])
 
     useEffect(() => {
         if(!thisHourRes) return;
-        let publicArr = [];
-        let privateArr = [];
+        let publicArr = [];     //this way we can build the arrays by just going through the res in order
+        let privateArr = [];    //no fullTournament type here because you can't reserve anything if there's a full tourney on a day
         let teamArr = [];
         let vrArr = [];
         for(let res of thisHourRes) {
@@ -42,6 +45,7 @@ const TableRow: React.FC<ITableRowProps> = ({ hour, reservations }) => {
         setPrivateRes(privateArr);
         setTeamRes(teamArr);
         setVrRes(vrArr);
+        setDisable(false);
     }, [thisHourRes]);
 
     return (
@@ -49,18 +53,26 @@ const TableRow: React.FC<ITableRowProps> = ({ hour, reservations }) => {
             <div className="col-2 mx-1 py-1">
                 <b>{hour?.getHours() > 12 ? hour?.getHours() - 12 : hour?.getHours()}{hour?.getHours() < 12 ? 'AM' : 'PM'}</b>
             </div>
-            <div className={`col-2 mx-1 py-1 rounded bg-${publicRes?.length < 10 ? 'success' : 'danger'}`}>
-                {10 - publicRes?.length}
-            </div>
-            <div className={`col-2 mx-1 py-1 rounded bg-${privateRes?.length < 5 ? 'success' : 'danger'}`}>
-                {5 - privateRes?.length}
-            </div>
-            <div className={`col-2 mx-1 py-1 rounded bg-${teamRes?.length < 1 ? 'success' : 'danger'}`}>
-                {1 - teamRes?.length}
-            </div>
-            <div className={`col-2 mx-1 py-1 rounded bg-${vrRes?.length < 1 ? 'success' : 'danger'}`}>
-                {1 - vrRes?.length}
-            </div>
+            <Link to={`/reservation/public/${hour.getTime()}`} className="col-2 mx-sm-1 px-1 px-sm-2">
+                <button className={`py-1 btn btn-block btn-${publicRes?.length < 10 ? 'success' : 'danger'}`} disabled={!(publicRes?.length < 10) || disable}>
+                    {10 - publicRes?.length}
+                </button>
+            </Link>
+            <Link to={`/reservation/private/${hour.getTime()}`} className="col-2 mx-sm-1 px-1 px-sm-2">
+                <button className={`py-1 btn btn-block btn-${privateRes?.length < 5 ? 'success' : 'danger'}`} disabled={!(privateRes?.length < 5) || disable}>
+                    {5 - privateRes?.length}
+                </button>
+            </Link>
+            <Link to={`/reservation/team/${hour.getTime()}`} className="col-2 mx-sm-1 px-1 px-sm-2">
+                <button className={`py-1 btn btn-block btn-${teamRes?.length < 1 ? 'success' : 'danger'}`} disabled={!(teamRes?.length < 1) || disable}>
+                    {1 - teamRes?.length}
+                </button>
+            </Link>
+            <Link to={`/reservation/vr/${hour.getTime()}`} className="col-2 mx-sm-1 px-1 px-sm-2">
+                <button className={`py-1 btn btn-block btn-${vrRes?.length < 1 ? 'success' : 'danger'}`} disabled={!(vrRes?.length < 1) || disable}>
+                    {1 - vrRes?.length}
+                </button>
+            </Link>
         </div>
     )
 

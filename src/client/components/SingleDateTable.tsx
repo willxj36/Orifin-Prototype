@@ -11,8 +11,8 @@ interface ISingleDateTableProps {
 
 const SingleDateTable: React.FC<ISingleDateTableProps> = ({ date }) => {
 
-    const [reservations, setReservations] = useState<IReservation[]>();
-    const rows = (() => {
+    const [reservations, setReservations] = useState<IReservation[]>(); //all reservations for the day
+    const rows = (() => {   //creates all the rows for the reservation table, doing this makes it very easy to change if owners want different business hours put up
         let arr = []
         let i: number;
         for(i = 10; i < 20; i++) {
@@ -21,9 +21,9 @@ const SingleDateTable: React.FC<ISingleDateTableProps> = ({ date }) => {
         return arr;
     })();
 
-    useEffect(() => {
+    useEffect(() => {       //pull the reservations for just this day
         (async () => {
-            let formattedDate = `${date.getFullYear()}-${date.getMonth() < 10 ? '0' : null}${date.getMonth() + 1}-${date.getDate()}`;
+            let formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1) < 10 ? '0' : ''}${date.getMonth() + 1}-${date.getDate() < 10 ? '0' : ''}${date.getDate()}`;
             let reservations = await apiService(`/api/reservations/date/${formattedDate}`);
             setReservations(reservations);
         })()
