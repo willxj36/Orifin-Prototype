@@ -52,7 +52,7 @@ router.get('/', async (req, res) => {
     }
 })
 
-router.post('/:userid', passport.authenticate('bearer'), isAdminOrUser, async (req, res) => {
+router.post('/:userid', passport.authenticate('bearer'), isAdminOrUser, async (req, res) => {   //userid param is required for the request handler
     try {
         let response: any = await db.Reservations.post(req.body);
         if(response.insertId) {
