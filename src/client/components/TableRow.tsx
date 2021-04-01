@@ -31,7 +31,7 @@ const TableRow: React.FC<ITableRowProps> = ({ hour, reservations }) => {
 
     useEffect(() => {
         if(!thisHourRes) return;
-        let publicArr = [];     //this way we can build the arrays by just going through the res in order
+        let publicArr = [];     //this way we can build the arrays by just going through the res array in order
         let privateArr = [];    //no fullTournament type here because you can't reserve anything if there's a full tourney on a day
         let teamArr = [];
         let vrArr = [];
@@ -53,22 +53,22 @@ const TableRow: React.FC<ITableRowProps> = ({ hour, reservations }) => {
             <div className="col-2 mx-1 py-1">
                 <b>{hour?.getHours() > 12 ? hour?.getHours() - 12 : hour?.getHours()}{hour?.getHours() < 12 ? 'AM' : 'PM'}</b>
             </div>
-            <Link to={`/reservation/public/${hour.getTime()}`} className="col-2 mx-sm-1 px-1 px-sm-2">
+            <Link to={`/reservation/public/${hour.getTime()}/${10-publicRes.length}`} className="col-2 mx-sm-1 px-1 px-sm-2">
                 <button className={`py-1 btn btn-block btn-${publicRes?.length < 10 ? 'success' : 'danger'}`} disabled={!(publicRes?.length < 10) || disable}>
                     {10 - publicRes?.length}
                 </button>
             </Link>
-            <Link to={`/reservation/private/${hour.getTime()}`} className="col-2 mx-sm-1 px-1 px-sm-2">
+            <Link to={`/reservation/private/${hour.getTime()}/${5-privateRes.length}`} className="col-2 mx-sm-1 px-1 px-sm-2">
                 <button className={`py-1 btn btn-block btn-${privateRes?.length < 5 ? 'success' : 'danger'}`} disabled={!(privateRes?.length < 5) || disable}>
                     {5 - privateRes?.length}
                 </button>
             </Link>
-            <Link to={`/reservation/team/${hour.getTime()}`} className="col-2 mx-sm-1 px-1 px-sm-2">
+            <Link to={`/reservation/team/${hour.getTime()}/${1-teamRes.length}`} className="col-2 mx-sm-1 px-1 px-sm-2">
                 <button className={`py-1 btn btn-block btn-${teamRes?.length < 1 ? 'success' : 'danger'}`} disabled={!(teamRes?.length < 1) || disable}>
                     {1 - teamRes?.length}
                 </button>
             </Link>
-            <Link to={`/reservation/vr/${hour.getTime()}`} className="col-2 mx-sm-1 px-1 px-sm-2">
+            <Link to={`/reservation/vr/${hour.getTime()}/${1-vrRes.length}`} className="col-2 mx-sm-1 px-1 px-sm-2">
                 <button className={`py-1 btn btn-block btn-${vrRes?.length < 1 ? 'success' : 'danger'}`} disabled={!(vrRes?.length < 1) || disable}>
                     {1 - vrRes?.length}
                 </button>
