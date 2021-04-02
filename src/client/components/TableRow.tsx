@@ -53,22 +53,42 @@ const TableRow: React.FC<ITableRowProps> = ({ hour, reservations }) => {
             <div className="col-2 mx-1 py-1">
                 <b>{hour?.getHours() > 12 ? hour?.getHours() - 12 : hour?.getHours()}{hour?.getHours() < 12 ? 'AM' : 'PM'}</b>
             </div>
-            <Link to={`/reservation/public/${hour.getTime()}/${10-publicRes.length}`} className="col-2 mx-sm-1 px-1 px-sm-2">
+            <Link to={{
+                pathname: `/reservation/public/${hour.getTime()}/${10-publicRes.length}`,
+                state: reservations
+                }} 
+                className="col-2 mx-sm-1 px-1 px-sm-2"
+            >
                 <button className={`py-1 btn btn-block btn-${publicRes?.length < 10 ? 'success' : 'danger'}`} disabled={!(publicRes?.length < 10) || disable}>
                     {10 - publicRes?.length}
                 </button>
             </Link>
-            <Link to={`/reservation/private/${hour.getTime()}/${5-privateRes.length}`} className="col-2 mx-sm-1 px-1 px-sm-2">
+            <Link to={{
+                pathname: `/reservation/private/${hour.getTime()}/${5-privateRes.length}`,
+                state: reservations
+                }} 
+                className="col-2 mx-sm-1 px-1 px-sm-2"
+            >
                 <button className={`py-1 btn btn-block btn-${privateRes?.length < 5 ? 'success' : 'danger'}`} disabled={!(privateRes?.length < 5) || disable}>
                     {5 - privateRes?.length}
                 </button>
             </Link>
-            <Link to={`/reservation/team/${hour.getTime()}/${1-teamRes.length}`} className="col-2 mx-sm-1 px-1 px-sm-2">
+            <Link to={{
+                pathname: `/reservation/team/${hour.getTime()}/${1-teamRes.length}`,
+                state: reservations
+                }} 
+                className="col-2 mx-sm-1 px-1 px-sm-2"
+            >
                 <button className={`py-1 btn btn-block btn-${teamRes?.length < 1 ? 'success' : 'danger'}`} disabled={!(teamRes?.length < 1) || disable}>
                     {1 - teamRes?.length}
                 </button>
             </Link>
-            <Link to={`/reservation/vr/${hour.getTime()}/${1-vrRes.length}`} className="col-2 mx-sm-1 px-1 px-sm-2">
+            <Link to={{
+                pathname: `/reservation/vr/${hour.getTime()}/${1-vrRes.length}`,
+                state: reservations
+                }} 
+                className="col-2 mx-sm-1 px-1 px-sm-2"
+            >
                 <button className={`py-1 btn btn-block btn-${vrRes?.length < 1 ? 'success' : 'danger'}`} disabled={!(vrRes?.length < 1) || disable}>
                     {1 - vrRes?.length}
                 </button>

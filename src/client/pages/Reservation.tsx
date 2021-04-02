@@ -4,7 +4,8 @@ import { useHistory, useParams } from 'react-router';
 
 import apiService from '../../utils/apiService';
 import { UserContext, IContextUser } from '../components/ContextProvider';
-import { IUser } from '../../utils/models';
+import { IUser, IReservation } from '../../utils/models';
+import { LinkProps } from 'react-router-dom';
 
 interface IReservationParams {
     type: string,
@@ -12,11 +13,13 @@ interface IReservationParams {
     spots: string
 }
 
-const Reservation = () => {
+const Reservation = ({ location }) => {
 
+    const reservations: IReservation[] = location.state;    //todo: filter out by same type as current res, find where availability ends. If it doesn't, allow the res
+                                                            //to go til midnight. add notes for what happens if they hit the 'max' number of hours
     const [user,] = useContext<IContextUser>(UserContext);
-    const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout>();
-    const [userEmail, setUserEmail] = useState<string>('');
+    const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout>();   //needed for clearTimeout to work, any other variables reset on any state change
+    const [userEmail, setUserEmail] = useState<string>('');     //comes from api call after context is loaded
 
     const [dateStart, setDateStart] = useState<Date>();
     const [dateEnd, setDateEnd] = useState<Date>();
@@ -47,7 +50,7 @@ const Reservation = () => {
 
     useEffect(() => {       //ensures reservation can't be submitted until the hours are determined and are not 0
         if(dateEnd) {
-            if(dateEnd !== dateStart) {
+            if(dateEnd.getTime() !== dateStart.getTime()) {
                 setBtnDisable(false);
             } else {
                 setBtnDisable(true);
@@ -86,7 +89,7 @@ const Reservation = () => {
 
                 <div className="d-flex flex-column align-items-center">
                     <label htmlFor="hoursSelect">How many hours?</label>
-                    <input onChange={(e) => handleEndChange(e)} className="form-control mb-4 col-4" type="number" name="hoursSelect" id="hoursSelectDropdown"/>
+                    <input onChange={(e) => handleEndChange(e)} className="form-control mb-4 col-4" type="number" min="0" max={dateStart ? 22 - dateStart.getHours() : 0} name="hoursSelect" id="hoursSelectDropdown"/>
                     <p><b><i><u>Extra Equipment Rental</u></i></b></p>
                     <label htmlFor="monitorSelect"><b>Extra Monitor</b></label>
                     <select className="form-control mb-2 col-4" name="monitorSelect" id="monitorSelect">
