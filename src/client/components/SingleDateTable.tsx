@@ -15,7 +15,7 @@ const SingleDateTable: React.FC<ISingleDateTableProps> = ({ date }) => {
     const rows = (() => {   //creates all the rows for the reservation table, doing this makes it very easy to change if owners want different business hours put up
         let arr = []
         let i: number;
-        for(i = 10; i < 20; i++) {
+        for(i = 0; i < 24; i++) {
             arr.push(<TableRow key={i} hour={new Date(date.getFullYear(), date.getMonth(), date.getDate(), i)} reservations={reservations} />)
         }
         return arr;

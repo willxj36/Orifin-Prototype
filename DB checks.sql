@@ -18,4 +18,5 @@ DELETE FROM rolePermissions WHERE roleid > 0;
 INSERT INTO reservationAvailability SET date = '2021-04-29 00:00:00';
 DELETE FROM reservations WHERE id > 0;
 
-INSERT INTO reservations SET startTime = '2021-03-31 13:00:00', endTime = '2021-03-31 15:00:00', userid='10', type='vr';
+INSERT INTO reservations SET startTime = '2021-04-03 12:00:00', endTime = '2021-04-03 20:00:00', userid='10', type='team';
+INSERT INTO headsets SET id = '5';
