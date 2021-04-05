@@ -34,7 +34,10 @@ const Reservation: React.FC<IReservationProps> = ({ location }) => {
 
     const [dateStart, setDateStart] = useState<Date>();     //Date object of exact time of res start based on params
     const [dateEnd, setDateEnd] = useState<Date>();         //Date object of end time of res based on hours selected
-    const [hours, setHours] = useState<number>(0);          //hour length of res; could calc this one from dateStart and dateEnd, but this will simplify submission code
+    const [hours, setHours] = useState<number>(0);          //hour length of res; could calc this one from dateStart and dateEnd, but this will simplify other code
+    const [headset, setHeadset] = useState<boolean>(false); //indicates if headset is requested
+    const [monitor, setMonitor] = useState<boolean>(false); //same as above but for monitor
+
     const [maxHours, setMaxHours] = useState<IMaxHours>({   //max hours allowed for this res based on either availability, or end of day
         hours: 0,
         beforeDayEnd: false
@@ -69,7 +72,7 @@ const Reservation: React.FC<IReservationProps> = ({ location }) => {
         if(!dateStart || !reservations || !params) return;
         let resThisType = reservations.filter(res => res.type === params.type);     //returns only reservations of same type
         let resHours: IReservation[][] = [];
-        for(let i = 0; i < 24 - dateStart.getHours(); i++) {    //creates arrays for reservations that interfere with each hour, then pushes those to resHours array
+        for(let i = 0 ; i < 24 - dateStart.getHours() ; i++) {    //creates arrays for reservations that interfere with each hour, then pushes those to resHours array
             let thisHour = resThisType.filter(res => {
                 let hour = dateStart.getTime() + (i * 3600000);
                 return res.startTime.getTime() <= hour && res.endTime.getTime() > hour;
@@ -103,8 +106,6 @@ const Reservation: React.FC<IReservationProps> = ({ location }) => {
         }
     }, [dateEnd]);
 
-    //need more useEffects for equipment to check its availability if/when user selects yes on either option
-
     const handleEndChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         let hours = Number(e.currentTarget.value);
         setHours(hours);
@@ -114,11 +115,57 @@ const Reservation: React.FC<IReservationProps> = ({ location }) => {
     }
 
     const handleSubmit = async () => {
-            //need logic here to verify once more on submission that there's availability (new DB pull). this will prevent over-booking if 2 people are on this page at the same time
-            //then both try to submit when there's only 1 slot
-        let response = await apiService(`/api/reservations/${user.userid}`, 'POST', {
-            //submit res details AND hours to update res and resAvailability table
-        })
+
+        const formattedDate = `${dateStart.getFullYear()}-${(dateStart.getMonth() + 1) < 10 ? '0' : ''}${dateStart.getMonth() + 1}-${dateStart.getDate() < 10 ? '0' : ''}${dateStart.getDate()}`;
+        let newReservations: IReservation[] = await apiService(`/api/reservations/date/${formattedDate}`);  //gets reservations on submit to ensure a new res hasn't submitted since this reservation process started
+        let resThisType = newReservations.filter(res => res.type === params.type);     //returns only reservations of same type
+        let resHours: IReservation[][] = [];
+        for(let i = 0 ; i < hours ; i++) {    //creates arrays for reservations that interfere with each hour, then pushes those to resHours array
+            let thisHour = resThisType.filter(res => {
+                let hour = dateStart.getTime() + (i * 3600000);
+                return res.startTime.getTime() <= hour && res.endTime.getTime() > hour;
+            })
+            resHours.push(thisHour);
+        }
+        const maxSpots = params.type === 'public' ? 10 : (params.type === 'private' ? 5 : 1);
+        let available: boolean = true;
+        for(const hour of resHours) {
+            if(hour.length === maxSpots) {      //length of each array = number of stations that will be taken for that hour, if any point in the res is full, set available to false
+                available = false;
+                break;
+            }
+        }
+
+        if(monitor) {
+            let monitorUse = newReservations.filter(res => res.monitorId);   //make new array of reservations that have monitors requested
+            let resMonitors: IReservation[][] = [];     //break down res with monitor by hour
+            for(let i = 0 ; i < hours ; i++) {
+                let thisHour = monitorUse.filter(res => {
+                    let hour = dateStart.getTime() + (i * 3600000);
+                    return res.startTime.getTime() <= hour && res.endTime.getTime() > hour;
+                })
+                resMonitors.push(thisHour);
+            };
+            let highest: number = 0;
+            let fullHours: number = 0;
+            //for loop to check each hour for number of monitors in use, highest is most monitors in use at once, fullHours is how many hours have monitors completely booked
+            //if fullHours = 0, monitorId is set to highest + 1. if fullHours is > 0 but < hours, set id to 100, give message about partial availability. if fullHours = hours,
+            //give message that no monitors are available for any of the hours requested
+
+        }
+
+        if(headset) {
+
+        }
+
+        if(available) {
+            let response = await apiService(`/api/reservations/${user.userid}`, 'POST', {
+                //submit res details AND hours to update res and resAvailability table
+            })
+        } else {
+            history.push(`/calendar/${formattedDate}`);
+            alert('Oops, looks like someone beat you to the finish line! The available spots were taken right before you submitted. Please check the updated availability and make a new reservation!');
+        }
     }
 
     return(
@@ -153,12 +200,12 @@ const Reservation: React.FC<IReservationProps> = ({ location }) => {
 
                     <p><b><i><u>Extra Equipment Rental</u></i></b></p>
                     <label htmlFor="monitorSelect"><b>Extra Monitor</b></label>
-                    <select className="form-control mb-2 col-4" name="monitorSelect" id="monitorSelect">
+                    <select onChange={(e) => setMonitor(e.currentTarget.value === 'yes' ? true : false)} className="form-control mb-2 col-4" name="monitorSelect" id="monitorSelect">
                         <option value="no">No</option>
                         <option value="yes">Yes</option>
                     </select>
                     <label htmlFor="headsetSelect"><b>Headset</b></label>
-                    <select className="form-control mb-4 col-4" name="headsetSelect" id="headsetSelect">
+                    <select onChange={(e) => setHeadset(e.currentTarget.value === 'yes' ? true : false)} className="form-control mb-4 col-4" name="headsetSelect" id="headsetSelect">
                         <option value="no">No</option>
                         <option value="yes">Yes</option>
                     </select>

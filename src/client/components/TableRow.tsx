@@ -51,7 +51,7 @@ const TableRow: React.FC<ITableRowProps> = ({ hour, reservations }) => {
     return (
         <div className="my-3 row justify-content-center">
             <div className="col-2 mx-1 py-1">
-                <b>{hour?.getHours() > 12 ? hour?.getHours() - 12 : hour?.getHours()}{hour?.getHours() < 12 ? 'AM' : 'PM'}</b>
+                <b>{hour?.getHours() > 12 ? hour?.getHours() - 12 : (hour?.getHours() === 0 ? 12 : hour?.getHours())} {hour?.getHours() < 12 ? 'AM' : 'PM'}</b>
             </div>
             <Link to={{
                 pathname: `/reservation/public/${hour.getTime()}/${10-publicRes.length}`,

@@ -7,29 +7,41 @@ import ReactCalendar from 'react-calendar';
 import TileContent from '../components/TileContent';
 import SingleDateTable from '../components/SingleDateTable';
 
-
 import { IAvailability } from '../../utils/models';
 import apiService from '../../utils/apiService';
+import { useParams } from 'react-router';
+
+interface ICalendarParams {
+    date: string
+}
 
 const Calendar = () => {
 
-    const [date, setDate] = useState<Date>(new Date());
-    const [showDate, setShowDate] = useState<boolean>(false);
-    const [availability, setAvailability] = useState<IAvailability[]>();
+    const paramDate = useParams<ICalendarParams>().date;
 
-    useEffect(() => {
+    const [date, setDate] = useState<Date>(new Date());     //sets date to be shown when switching to single date view
+    const [showDate, setShowDate] = useState<boolean>(false);   //switches between full month and single date views
+    const [availability, setAvailability] = useState<IAvailability[]>();    //loads resAvailability table, not detailed reservations
+
+    useEffect(() => {   
         (async () => {
-            let avail: IAvailability[] = await apiService('/api/reservations');
-            avail.forEach(eachDate => {
-                let [noTime] = eachDate.date.split('T', 1);
-                let dateParts = noTime.split('-');
-                eachDate.date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
-            })
+            let avail: IAvailability[] = await apiService('/api/reservations'); //pulls availability
+            avail.forEach(eachDate => eachDate.date = new Date(eachDate.date)); //reconverts dates into Date from string
             setAvailability(avail);
         })();
     }, []);
 
-    const dateClick = (value: any) => {
+    useEffect(() => {   //if a date is passed as a parameter (YYYY-MM-DD format), will skip straight to single date view on date specified
+        if(paramDate) {
+            let [noTime] = paramDate.split('T', 1);     //these 3 lines required to convert string into proper date format
+            let dateParts = noTime.split('-');          //new Date(paramDate) adjusts for time zone AFTER setting date, thus gives the day before the desired date
+            let date = new Date(Number(dateParts[0]), Number(dateParts[1]) - 1, Number(dateParts[2]));
+            setDate(date);
+            setShowDate(true);
+        }
+    }, [paramDate]);
+
+    const dateClick = (value: any) => { //called when a single date tile is clicked
         setDate(value);
         setShowDate(true);
     }
