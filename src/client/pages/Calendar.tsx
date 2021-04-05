@@ -82,7 +82,7 @@ const Calendar = () => {
                     />
                 </div>
                 {showDate && (
-                    <div className={`col-sm-9 mx-auto`}>
+                    <div className="col-sm-9 mx-auto mt-5 pt-3">
                         <div className="text-white row justify-content-start">
                             <span className="row" role="button" onClick={() => setShowDate(false)}>
                                 <FontAwesomeIcon icon={faArrowCircleLeft} size="2x" />

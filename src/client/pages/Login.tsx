@@ -92,7 +92,7 @@ const Login = () => {
                 <div className="mb-3 mt-4 row justify-content-center">
                     <Link className="pt-2 btn btn-outline-darkinfo" to="/memberships">Not a member yet? Check out our membership packages!</Link>
                     <p className="mx-4 mt-2"><b>OR</b></p>
-                    <Link className="pt-2 btn btn-outline-darkinfo" to={params.resType ? '/register/res' : '/register'}>Register as a guest</Link>
+                    <Link className="pt-2 btn btn-outline-darkinfo" to='/register'>Register as a guest</Link>
                 </div>
             </div>
 

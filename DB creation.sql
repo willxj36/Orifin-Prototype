@@ -18,6 +18,8 @@ CREATE TABLE users (
     `password` VARCHAR(60) NOT NULL,
     `roleid` INT NOT NULL DEFAULT '1',
     `_created` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `membershipStart` DATETIME NULL,
+    `hours` INT NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_role`
     FOREIGN KEY (`roleid`)
@@ -62,10 +64,10 @@ CREATE TABLE rolePermissions (
 
 CREATE TABLE reservationAvailability (
 	`date` DATETIME NOT NULL,
-    `public` TINYINT NOT NULL DEFAULT '10',
-    `private` TINYINT NOT NULL DEFAULT '1',
-    `team` TINYINT NOT NULL DEFAULT '1',
-    `vr` TINYINT NOT NULL DEFAULT '5',
+    `public` INT NOT NULL DEFAULT '240',
+    `private` INT NOT NULL DEFAULT '120',
+    `team` TINYINT NOT NULL DEFAULT '24',
+    `vr` TINYINT NOT NULL DEFAULT '24',
     `fullTournament` TINYINT NOT NULL DEFAULT '1',
     PRIMARY KEY (`date`)
 );
@@ -88,13 +90,7 @@ CREATE TABLE headsets (
 	`id` INT NOT NULL PRIMARY KEY
 );
 
-ALTER TABLE reservations
-	ADD COLUMN `monitorid` INT NULL,
-    ADD COLUMN `headsetid` INT NULL,
-    ADD CONSTRAINT `fk_monitorid`
-		FOREIGN KEY (`monitorid`)
-        REFERENCES `monitors` (`id`),
-	ADD CONSTRAINT `fk_headsetid`
-		FOREIGN KEY (`headsetid`)
-        REFERENCES `headsets` (`id`)
-	;
+ALTER TABLE reservationAvailability
+	MODIFY COLUMN `private` INT NOT NULL DEFAULT '120',
+    MODIFY COLUMN `vr` TINYINT NOT NULL DEFAULT '24'
+;

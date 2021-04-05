@@ -12,7 +12,6 @@ router.get('/date/:date/:hour?', async (req, res) => {
             let hourRaw = req.params.hour;
             let hour = `${hourRaw}:00:00`;
             let reservations = await db.Reservations.getHour(`${dateRaw} ${hour}`);
-            reservations.forEach(res => delete res.userid);
             res.json(reservations);
         } catch (e) {
             console.log(e);
@@ -22,7 +21,6 @@ router.get('/date/:date/:hour?', async (req, res) => {
         try {
             let date = `${dateRaw}%`
             let reservations = await db.Reservations.getDay(date);
-            reservations.forEach(res => delete res.userid);
             res.json(reservations);
         } catch (e) {
             console.log(e);
@@ -54,7 +52,23 @@ router.get('/', async (req, res) => {
 
 router.post('/:userid', passport.authenticate('bearer'), isAdminOrUser, async (req, res) => {   //userid param is required for the request handler
     try {
-        let response: any = await db.Reservations.post(req.body);
+        let dateTime: Date = new Date(req.body.startTime);   //this block updates availability table
+        let date: Date = new Date(dateTime.getFullYear(), dateTime.getMonth(), dateTime.getDate()); //1st 2 lines here assure the right date is being updated separate from timezone
+        let publicHours: number = req.body.type === 'public' ? req.body.hours : 0;
+        let privateHours: number = req.body.type === 'private' ? req.body.hours : 0;
+        let teamHours: number = req.body.type === 'team' ? req.body.hours : 0;
+        let vrHours: number = req.body.type === 'vr' ? req.body.hours : 0;
+        let fullTournamentHours: number = req.body.type === 'fullTournament' ? 1 : 0;
+        let availResponse: any = await db.Reservations.updateAvail(date, publicHours, privateHours, teamHours, vrHours, fullTournamentHours);
+        console.log(availResponse);
+
+        let userHourRes: any = await db.Users.addHours(req.body.userid, req.body.hours);    //updates hours for user making reservation
+        console.log(userHourRes);
+
+        delete req.body.hours;
+        req.body.startTime = new Date(req.body.startTime);
+        req.body.endTime = new Date(req.body.endTime);
+        let response: any = await db.Reservations.post(req.body);   //posts the reservation
         if(response.insertId) {
             res.json({message: 'Reservation made!', reservationId: response.insertId});
         } else {

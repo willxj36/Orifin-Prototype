@@ -15,6 +15,8 @@ const put = async(user: IUser, id: number) => await Query('UPDATE users SET ? WH
 
 const deleter = async(id: number) => await Query('DELETE FROM users WHERE id = ?', [id]);
 
+const addHours = async(id: number, hours: number) => await Query('UPDATE users SET hours = hours + ? WHERE id = ?', [hours, id]);
+
 export default {
     getAll,
     checkEmail,
@@ -22,5 +24,6 @@ export default {
     findBy,
     post,
     put,
-    deleter
+    deleter,
+    addHours
 }

@@ -39,13 +39,14 @@ export interface IMembership {
 }
 
 export interface IReservation {
+    hours?: number,
     id?: number,
     startTime: Date,
     endTime: Date,
-    userId?: number,
+    userid?: number,
     type: string,
-    monitorId?: number,
-    headsetId?: number
+    monitorid?: number,
+    headsetid?: number
 }
 
 export interface IAvailability {
