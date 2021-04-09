@@ -10,7 +10,9 @@ export interface IUser {
     email?: string,
     password?: string,
     role?: string,
-    _created?: Date
+    _created?: Date,
+    membershipStart?: Date,
+    hours?: number
 }
 
 export interface IDbResponse {

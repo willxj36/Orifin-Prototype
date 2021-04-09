@@ -4,7 +4,7 @@ import * as passport from 'passport';
 import db from '../../db';
 
 import { IUser } from '../../../utils/models';
-import { isAdmin } from '../../middleware/requestHandlers';
+import { isAdmin, isAdminOrUser } from '../../middleware/requestHandlers';
 
 const router = express.Router();
 
@@ -41,6 +41,20 @@ router.get('/', passport.authenticate('bearer'), isAdmin, async (req: any, res) 
         let users: IUser[] = await db.Users.getAll();
         users.forEach(user => delete user.password);
         res.json(users);
+    } catch (e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+})
+
+router.put('/:userid', passport.authenticate('bearer'), isAdminOrUser, async (req: any, res) => {   //userid param is needed for request handler
+    try {
+        let response: any = await db.Users.put(req.body, req.user.id);
+        if(response.affectedRows) {
+            res.json({message: 'User successfully updated!'});
+        } else {
+            res.sendStatus(500);
+        }
     } catch (e) {
         console.log(e);
         res.sendStatus(500);

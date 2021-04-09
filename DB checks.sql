@@ -4,7 +4,7 @@ SELECT * FROM permissions;
 SELECT * FROM rolePermissions;
 SELECT * FROM accesstokens;
 SELECT * FROM reservationAvailability;
-SELECT * FROM reservations;	
+SELECT * FROM reservations;
 SELECT * FROM monitors;
 SELECT * FROM headsets;
 SELECT p.permission FROM permissions p
@@ -20,4 +20,4 @@ DELETE FROM reservations WHERE id > 0;
 UPDATE reservationAvailability SET vr = 20 WHERE date = '2021-04-06 00:00:00';
 
 INSERT INTO reservations SET startTime = '2021-04-03 12:00:00', endTime = '2021-04-03 20:00:00', userid='10', type='team';
-INSERT INTO headsets SET id = '5';
+INSERT INTO monitors SET id = '10';

@@ -5,7 +5,13 @@ const getAll = async () => await Query('SELECT * FROM users');
 
 const checkEmail = async(email: string) => await Query('SELECT email FROM users WHERE email LIKE ?', [email]);
 
-const findOne = async(column: string, value: string | number) => await Query('SELECT * FROM users WHERE ?? LIKE ? LIMIT 1', [column, value]);
+const findOne = async(column: string, value: string | number) => await (
+    Query(`SELECT u.id, u.firstName, u.lastName, u.email, u._created, u.membershipStart, u.hours, r.role
+        FROM users u
+        JOIN roles r ON r.id = u.roleid 
+        WHERE u.?? LIKE ? LIMIT 1`,
+        [column, value])
+);
 
 const findBy = async(column: string, value: string | number) => await Query('SELECT * FROM users WHERE ?? LIKE ?', [column, value]);
 

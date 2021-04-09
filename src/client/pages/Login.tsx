@@ -55,7 +55,7 @@ const Login = () => {
             SetAccessToken(res.token, {userid: res.userid, role: res.roleid});
             setAfterLogin(true);
             setUser({userid: res.userid, role: res.roleid});
-            if(params) {
+            if(params.resType) {
                 history.push(`/reservation/${params.resType}/${params.time}/${params.spots}`);
             } else {
                 history.push(`/member-home/${res.userid}`);

@@ -30,6 +30,11 @@ interface IPostResponse {
     reservationId: string
 }
 
+interface IEquipmentArr {
+    monitorFullArr: number[],
+    headsetFullArr: number[]
+}
+
 const Reservation: React.FC<IReservationProps> = ({ location }) => {
 
     const reservations = location.state;
@@ -52,12 +57,16 @@ const Reservation: React.FC<IReservationProps> = ({ location }) => {
     const [spots, setSpots] = useState<number>(0);  //placeholder for now, can be used later to reserve multiple spots but for now, 1 user 1 reservation
 
     const [btnDisable, setBtnDisable] = useState<boolean>(true);
-    const [confirm, setConfirm] = useState<boolean>(false);
+    const [confirm, setConfirm] = useState<boolean>(false);  //switch to confirmation screen
 
     const params = useParams<IReservationParams>();
     const history = useHistory();
 
     const [fullData, setFullData] = useState<IReservation>(); //used to pass info to confirmation screen
+    const [equipmentArr, setEquipmentArr] = useState<IEquipmentArr>({
+        monitorFullArr: [],
+        headsetFullArr: []
+    })
 
     useEffect(() => {
         clearTimeout(timeoutId);    //page refresh would cause a redirect to login because no user, then to member page as it found the user. The timeout here prevents that.
@@ -148,13 +157,13 @@ const Reservation: React.FC<IReservationProps> = ({ location }) => {
         let available: boolean = !resHours.some(hourArr => hourArr.length === maxSpots);     //check for availability again with newly loaded reservations
 
         let monitorid: number;
-        if (monitor) {
+        if (monitor) {      //determine availability of equipment and assign which id; id's above actual number of headsets indicate availability for only some of the reservation
             let monitorUse = newReservations.filter(res => res.monitorid);   //make new array of reservations that have monitors requested
             let resMonitors: IReservation[][] = [];     //break down res with monitor by hour
             for (let i = 0; i < hours; i++) {
                 let thisHour = monitorUse.filter(res => {
                     let hour = dateStart.getTime() + (i * 3600000);
-                    return res.startTime.getTime() <= hour && res.endTime.getTime() > hour;
+                    return new Date(res.startTime).getTime() <= hour && new Date(res.endTime).getTime() > hour;
                 })
                 resMonitors.push(thisHour);
             };
@@ -164,6 +173,7 @@ const Reservation: React.FC<IReservationProps> = ({ location }) => {
                 if (hour.length > highest) highest = hour.length;
                 if (hour.length === 5) fullHourArr.push(resMonitors.indexOf(hour));
             }
+            setEquipmentArr({...equipmentArr, monitorFullArr: fullHourArr});
             monitorid = fullHourArr.length === hours ? null : highest + 1;
         }
 
@@ -174,7 +184,7 @@ const Reservation: React.FC<IReservationProps> = ({ location }) => {
             for (let i = 0; i < hours; i++) {
                 let thisHour = headsetUse.filter(res => {
                     let hour = dateStart.getTime() + (i * 3600000);
-                    return res.startTime.getTime() <= hour && res.endTime.getTime() > hour;
+                    return new Date(res.startTime).getTime() <= hour && new Date(res.endTime).getTime() > hour;
                 })
                 resHeadsets.push(thisHour);
             };
@@ -184,6 +194,7 @@ const Reservation: React.FC<IReservationProps> = ({ location }) => {
                 if (hour.length > highest) highest = hour.length;
                 if (hour.length === 5) fullHourArr.push(resHeadsets.indexOf(hour));
             }
+            setEquipmentArr({...equipmentArr, headsetFullArr: fullHourArr});
             headsetid = fullHourArr.length === hours ? null : highest + 1;
         }
 
@@ -258,7 +269,7 @@ const Reservation: React.FC<IReservationProps> = ({ location }) => {
                 </>
             )}
 
-            {confirm && <ResConfirmation data={fullData} />}
+            {confirm && <ResConfirmation data={fullData} equipment={equipmentArr} />}
 
         </div>
     )
