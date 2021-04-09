@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 import { IUser, IUserLocal } from '../../utils/models';
@@ -9,32 +9,24 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faSpinner, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 interface IMemberUserInfoProps {
-    user: IUserLocal
+    userInfo: IUser
 }
 
-const MemberUserInfo: React.FC<IMemberUserInfoProps> = ({ user }) => {
+const MemberUserInfo: React.FC<IMemberUserInfoProps> = ({ userInfo }) => {
 
-    const [userInfo, setUserInfo] = useState<IUser>();
     const [firstName, setFirstName] = useState<string>('');
     const [lastName, setLastName] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
-    const [userEdit, setUserEdit] = useState<boolean>(false);
+    const [userEdit, setUserEdit] = useState<boolean>(false);         //edit process goes through a couple screens, these states navigate through them
     const [passwordEntry, setPasswordEntry] = useState<boolean>(false);
-    const [showPass, setShowPass] = useState<boolean>(false);
+    const [showPass, setShowPass] = useState<boolean>(false);       //show password in plain text
     const [btnInfoDisable, setBtnInfoDisable] = useState<boolean>(true);
     const [btnPassDisable, setBtnPassDisable] = useState<boolean>(true);
-    const [changed, setChanged] = useState<boolean>(false);
+    const [changed, setChanged] = useState<boolean>(false);     //becomes true after an edit, causes a reload of userInfo to reflect updates on component
 
-    useEffect(() => {
-        if (user.userid) (async () => {
-            let userInfo = await apiService(`/api/users/id/${user.userid}`);
-            setUserInfo(userInfo);
-        })();
-    }, [user, changed]);
-
-    useEffect(() => {
+    useEffect(() => {   //ensures info can't be submitted with a blank input which would cause server error
         if(firstName && lastName && email) setBtnInfoDisable(false);
     }, [firstName, lastName, email]);
 
@@ -42,36 +34,36 @@ const MemberUserInfo: React.FC<IMemberUserInfoProps> = ({ user }) => {
         if(password) setBtnPassDisable(false);
     }, [password]);
 
-    useEffect(() => {
-        if(changed) return;
+    useEffect(() => {   //sets states for edit values to current values
+        if(!userEdit) return;   //stops states from being set if no editing going on, also prevents an error when page first loads
         setFirstName(userInfo.firstName);
         setLastName(userInfo.lastName);
         setEmail(userInfo.email);
     }, [userEdit])
 
     const handleSubmit = async () => {
-        setBtnPassDisable(true);
-        let verify = await apiService('/auth/verify', 'POST', {
+        setBtnPassDisable(true);    //prevent multiple submits
+        let verify = await apiService('/auth/verify', 'POST', {     //route simply verifies password
             email: userInfo.email,
             password
         });
-        if(verify.status === 200) {
-            let response = await apiService(`/api/users/${user.userid}`, 'PUT', {
+        if(verify) {
+            let response = await apiService(`/api/users/${userInfo.id}`, 'PUT', {   //sends request to update db
                 firstName,
                 lastName,
                 email
             });
-            if(response.ok) {
+            if(response) {
                 alert(response.message);
-                setChanged(true);
-                setUserEdit(false);
+                setChanged(true);   //causes reload of userInfo
+                setUserEdit(false); //pushes card back to non-edit display
+                setPasswordEntry(false);    //resets state so if user attempts to edit again, it doesn't skip the input screen
             } else {
                 alert('Something went wrong, please try again');
-                setPasswordEntry(false);
+                setPasswordEntry(false);    //this only happens if something goes wrong on server side, so it only sets client back one screen so they can try again
             }
         } else {
             alert('Password is incorrect, please try again');
-            setBtnPassDisable(false);
         }
     }
 

@@ -31,7 +31,7 @@ router.get('/date/:date/:hour?', async (req, res) => {
 
 router.get('/user/:userid', passport.authenticate('bearer'), isAdminOrUser, async (req, res) => {
     try {
-        let id = Number(req.params.id);
+        let id = Number(req.params.userid);
         let reservations = await db.Reservations.getUser(id);
         res.json(reservations);
     } catch (e) {
