@@ -112,7 +112,10 @@ const MemberUserInfo: React.FC<IMemberUserInfoProps> = ({ userInfo }) => {
                                     className="mb-3 form-control"
                                     defaultValue={userInfo.email}
                                 />
-                                <button onClick={() => setPasswordEntry(true)} className="btn btn-outline-darkinfo" disabled={btnInfoDisable}>Submit Changes</button>
+                                <div className="mx-auto row justify-content-between">
+                                    <button onClick={() => setPasswordEntry(true)} className="btn btn-outline-darkinfo" disabled={btnInfoDisable}>Submit Changes</button>
+                                    <button onClick={() => setUserEdit(false)}className="btn btn-outline-dark">Cancel</button>
+                                </div>
                             </div>
                         ) : (
                             <div className="form">

@@ -45,13 +45,14 @@ const UserResSummary: React.FC<IUserResSummaryProps> = ({ reservations, userInfo
                     <div className="card-body">
                         <p><b>Hours used this period:</b> {userInfo.hours}{hourMax ? `/${hourMax}` : null}</p>
                         <p>
-                            <b>Next reservation at:</b> {((reservations.filter(res => res.startTime > new Date()))[0])?.startTime.toString() || (
+                            <b>Next reservation:</b> {((reservations.filter(res => res.startTime > new Date()))[0])?.startTime.toString() || (
                                 <>
                                     <span>No upcoming reservations</span>
                                     <span><Link to="/calendar" className="ml-2"><b><i>Book a spot!</i></b></Link></span>
                                 </>
                             )}
                         </p>
+                        <p><b>Last visit:</b> {((reservations.filter(res => res.startTime < new Date())).reverse()[0])?.startTime.toString() || 'No recent visits'}</p>
                     </div>
                 </>
             ) : (

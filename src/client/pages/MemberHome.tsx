@@ -6,6 +6,7 @@ import apiService from '../../utils/apiService';
 import { UserContext, IContextUser } from '../components/ContextProvider';
 import MemberUserInfo from '../components/MemberUserInfo';
 import UserResSummary from '../components/UserResSummary';
+import UserResList from '../components/UserResList';
 
 const MemberHome = () => {
 
@@ -32,8 +33,13 @@ const MemberHome = () => {
                     <div className="col-lg-4">
                         <MemberUserInfo userInfo={userInfo} />
                     </div>
-                    <div className="col-lg-7">
+                    <div className="col-lg-8">
                         <UserResSummary reservations={reservations} userInfo={userInfo} />
+                    </div>
+                </div>
+                <div className="row mt-3">
+                    <div className="col">
+                        <UserResList reservations={reservations} userInfo={userInfo} />
                     </div>
                 </div>
             </div>
