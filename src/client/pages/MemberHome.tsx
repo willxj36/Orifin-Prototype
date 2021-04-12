@@ -15,6 +15,8 @@ const MemberHome = () => {
     const [reservations, setReservations] = useState<IReservation[]>();
     const [userInfo, setUserInfo] = useState<IUser>();
 
+    const [changed, setChanged] = useState<boolean>(false); //triggers a reload of the reservations if one is edited or deleted
+
     useEffect(() => {
         if(user.userid) {
             (async () => {
@@ -24,7 +26,7 @@ const MemberHome = () => {
                 setUserInfo(userInfo);
             })()
         }
-    },  [user])
+    },  [user, changed])
 
     return(
         <div className="min-vh-100 bg-deepred">
@@ -39,7 +41,7 @@ const MemberHome = () => {
                 </div>
                 <div className="row mt-3">
                     <div className="col">
-                        <UserResList reservations={reservations} userInfo={userInfo} />
+                        <UserResList reservations={reservations} userInfo={userInfo} setChanged={setChanged} />
                     </div>
                 </div>
             </div>

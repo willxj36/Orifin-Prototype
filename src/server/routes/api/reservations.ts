@@ -50,10 +50,40 @@ router.get('/', async (req, res) => {
     }
 })
 
+router.post('/delete/:userid/:resid', passport.authenticate('bearer'), isAdminOrUser, async (req, res) => { //deletes info but need a req.body to update hours
+    try {
+        let date = new Date(req.body.date); //first block updates availability table
+        console.log(date);
+        let publicHours: number = req.body.type === 'public' ? req.body.hours : 0;
+        let privateHours: number = req.body.type === 'private' ? req.body.hours : 0;
+        let teamHours: number = req.body.type === 'team' ? req.body.hours : 0;
+        let vrHours: number = req.body.type === 'vr' ? req.body.hours : 0;
+        let fullTournamentHours: number = req.body.type === 'fullTournament' ? 1 : 0;
+        let availResponse: any = await db.Reservations.updateAvail(date, publicHours, privateHours, teamHours, vrHours, fullTournamentHours);
+        console.log(availResponse);
+        
+        let userId = Number(req.params.userid);
+        let userHourRes: any = await db.Users.addHours(userId, req.body.hours);    //updates hours for user making reservation
+        console.log(userHourRes);
+
+        let resId = Number(req.params.resid);
+        let response: any = await db.Reservations.deleter(resId);   //deletes reservation entirely from db
+        if(response.affectedRows) {
+            res.json({message: 'Reservation canceled'});
+        } else {
+            res.json({message: 'Reservation failed to update, please try again. If problem persists, please contact tech support'});
+        }
+    } catch (e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+})
+
 router.post('/:userid', passport.authenticate('bearer'), isAdminOrUser, async (req, res) => {   //userid param is required for the request handler
     try {
         let dateTime: Date = new Date(req.body.startTime);   //this block updates availability table
         let date: Date = new Date(dateTime.getFullYear(), dateTime.getMonth(), dateTime.getDate()); //1st 2 lines here assure the right date is being updated separate from timezone
+        console.log(date);
         let publicHours: number = req.body.type === 'public' ? req.body.hours : 0;
         let privateHours: number = req.body.type === 'private' ? req.body.hours : 0;
         let teamHours: number = req.body.type === 'team' ? req.body.hours : 0;
@@ -95,20 +125,6 @@ router.put('/:userid/:id', passport.authenticate('bearer'), isAdminOrUser, async
     }
 })
 
-router.delete('/:userid/:id', passport.authenticate('bearer'), isAdminOrUser, async (req, res) => {
-    try {
-        let id = Number(req.params.id);
-        let response: any = await db.Reservations.deleter(id);
-        if(response.affectedRows) {
-            res.json({message: 'Reservation canceled'});
-        } else {
-            res.json({message: 'Reservation failed to update, please try again. If problem persists, please contact tech support'});
-        }
-    } catch (e) {
-        console.log(e);
-        res.sendStatus(500);
-    }
-})
 
 
 export default router;
