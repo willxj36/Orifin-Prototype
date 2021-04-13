@@ -8,7 +8,8 @@ import apiService from '../../utils/apiService';
 
 interface IResListRowProps {
     reservation: IReservation,
-    setChanged: Dispatch<SetStateAction<boolean>>
+    setChanged: Dispatch<SetStateAction<boolean>>,
+    setResEdit: Dispatch<SetStateAction<IReservation>>
 }
 
 interface ITimes {
@@ -16,7 +17,7 @@ interface ITimes {
     endTime: string
 }
 
-const ResListRow: React.FC<IResListRowProps> = ({ reservation, setChanged }) => {
+const ResListRow: React.FC<IResListRowProps> = ({ reservation, setChanged, setResEdit }) => {
 
     const [times, setTimes] = useState<ITimes>({
         startTime: '',
@@ -61,20 +62,17 @@ const ResListRow: React.FC<IResListRowProps> = ({ reservation, setChanged }) => 
                 {times.endTime}
             </div>
             <div className="px-1 px-lg-2 px-xl-3 py-1 col-md-1 border border-dark">
-                {reservation.type[0].toUpperCase() + reservation.type.slice(1)}
+                {reservation.type === 'vr' ? reservation.type.toUpperCase() : reservation.type[0].toUpperCase() + reservation.type.slice(1)}
             </div>
             <div className="py-1 col-md-2 border border-dark d-flex justify-content-around align-items-center">
                 {reservation.startTime > new Date() && (    //only allows edit and delete buttons to show for upcoming reservations
                     <>
-                        <span><FontAwesomeIcon icon={faEdit} size='2x' /></span>
-                        <span>
-                            <FontAwesomeIcon 
-                                onClick={handleDelete}
-                                role="button"
-                                icon={faTrash}
-                                size='2x'
-                            />
-                        </span>
+                        <button className="btn btn-outline-darkinfo">
+                            <FontAwesomeIcon onClick={() => setResEdit(reservation)} icon={faEdit} size='lg' />
+                        </button>
+                        <button className="btn btn-outline-darkinfo">
+                            <FontAwesomeIcon onClick={handleDelete} icon={faTrash} size='lg' />
+                        </button>
                     </>
                 )}
             </div>

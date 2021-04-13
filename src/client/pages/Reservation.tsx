@@ -41,7 +41,8 @@ const Reservation: React.FC<IReservationProps> = ({ location }) => {
 
     const [user,] = useContext<IContextUser>(UserContext);
     const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout>();   //needed for clearTimeout to work, any other variables reset on any state change
-    const [userEmail, setUserEmail] = useState<string>('');     //comes from api call after context is loaded
+    const [userInfo, setUserInfo] = useState<IUser>();     //comes from api call after context is loaded
+    const [userHourMax, setUserHourMax] = useState<number>(0);  //max hours in a month based on membership
 
     const [dateStart, setDateStart] = useState<Date>();     //Date object of exact time of res start based on params
     const [dateEnd, setDateEnd] = useState<Date>();         //Date object of end time of res based on hours selected
@@ -54,6 +55,7 @@ const Reservation: React.FC<IReservationProps> = ({ location }) => {
         beforeDayEnd: false
     });
     const [showMaxMessage, setShowMaxMessage] = useState<boolean>(false);
+    const [userMaxMessage, setUserMaxMessage] = useState<boolean>(false);
     const [spots, setSpots] = useState<number>(0);  //placeholder for now, can be used later to reserve multiple spots but for now, 1 user 1 reservation
 
     const [btnDisable, setBtnDisable] = useState<boolean>(true);
@@ -75,7 +77,10 @@ const Reservation: React.FC<IReservationProps> = ({ location }) => {
         } else {
             (async () => {
                 let userInfo: IUser = await apiService(`/api/users/id/${user.userid}`); //grabs user email to show who they're logged in as
-                setUserEmail(userInfo.email);                                           //server will authenticate regardless since the userid is just pulled from localstorage
+                setUserInfo(userInfo);                                           //server will authenticate regardless since the userid is just pulled from localstorage
+                if(user.role == 20) setUserHourMax(30);
+                if(user.role == 30) setUserHourMax(50);
+                if(user.role == 40) setUserHourMax(100);
             })();
         }
     }, [user]);
@@ -127,7 +132,8 @@ const Reservation: React.FC<IReservationProps> = ({ location }) => {
     const handleEndChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         let hours = Number(e.currentTarget.value);
         setHours(hours);
-        setShowMaxMessage(hours === maxHours.hours ? true : false);
+        setUserMaxMessage(userHourMax ? (hours + userInfo.hours) > userHourMax : false);
+        setShowMaxMessage(hours === maxHours.hours);
         let endHours = new Date(Number(params.time) + (hours * 3600000));
         setDateEnd(endHours);
     }
@@ -232,11 +238,11 @@ const Reservation: React.FC<IReservationProps> = ({ location }) => {
 
                     <div className="p-4 col col-md-6 col-xl-4 container rounded" style={{ background: 'linear-gradient(330deg, #FFD766, silver)' }}>
 
-                        <p className="text-center"><b><i>Logged in as:</i></b> {userEmail}</p>
+                        <p className="text-center"><b><i>Logged in as:</i></b> {userInfo?.email}</p>
                         <p className="text-center"><b><i>Reservation for:</i></b> {dateStart?.toDateString()}</p>
                         <p className="text-center"><b><i>At:</i></b> {dateStart?.toTimeString()}</p>
                         <p className="text-center"><b><i>Until:</i></b> {dateEnd ? dateEnd?.toTimeString() : 'Please choose hours'}</p>
-                        <p className="text-center"><b><i>Station:</i></b> {params.type[0].toUpperCase() + params.type.slice(1)}</p>
+                        <p className="text-center"><b><i>Station:</i></b> {params.type === 'vr' ? params.type.toUpperCase() : params.type[0].toUpperCase() + params.type.slice(1)}</p>
 
                         <div className="d-flex flex-column align-items-center">
                             <label htmlFor="hoursSelect">How many hours?</label>
@@ -248,6 +254,12 @@ const Reservation: React.FC<IReservationProps> = ({ location }) => {
                                 ) : (
                                     'To continue reservation past midnight, please make a separate reservation for following day AFTER submitting this reservation'
                                 )}
+                                </p>
+                            )}
+
+                            {userMaxMessage && (
+                                <p className="text-danger text-center">
+                                    This reservation will put you over your monthly member hours. You will need to pay for {hours + userInfo.hours - userHourMax} extra hours.
                                 </p>
                             )}
 
@@ -269,7 +281,7 @@ const Reservation: React.FC<IReservationProps> = ({ location }) => {
                 </>
             )}
 
-            {confirm && <ResConfirmation data={fullData} equipment={equipmentArr} />}
+            {confirm && <ResConfirmation data={fullData} equipment={equipmentArr} userInfo={userInfo} userHourMax={userHourMax} />}
 
         </div>
     )
