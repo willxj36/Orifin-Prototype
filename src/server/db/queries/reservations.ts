@@ -15,11 +15,13 @@ const updateRes = async (id: number, reservation: IReservation) => await Query('
 
 const deleter = async (id: number) => await Query('DELETE FROM reservations WHERE id = ?', [id]);   //delete a reservation entirely (will not save any info)
 
-const updateDay = async (newDay: Date, yesterday: Date) => {    //only used to move the availability table forward each day
+const updateDay = async (newDay: Date, today: Date) => {    //only used to move the availability table forward each day, can also catch up if there's a problem updating
     let insertResponse = await Query('INSERT INTO reservationAvailability SET date = ?', [newDay]);
-    let deleteResponse = await Query('DELETE FROM reservationAvailability WHERE date = ?', [yesterday]);
+    let deleteResponse = await Query('DELETE FROM reservationAvailability WHERE date < ?', [today]);    //deletes any days before today
     return [insertResponse, deleteResponse];
 };
+
+const insertDay = async (day: Date) => await Query('INSERT INTO reservationAvailability SET date = ?', [day]);  //only used with the catchup api for a missed day
 
 const updateAvail = async (date: Date, publicHours: number, privateHours: number, teamHours: number, vrHours: number, fullTournamentHours: number) => (
     Query('UPDATE reservationAvailability SET public = public - ?, private = private - ?, team = team - ?, vr = vr - ?, fullTournament = fullTournament - ? WHERE date = ?', 
@@ -35,5 +37,6 @@ export default {
     updateRes,
     deleter,
     updateDay,
+    insertDay,
     updateAvail
 }

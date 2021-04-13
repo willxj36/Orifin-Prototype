@@ -26,7 +26,7 @@ router.get('/:column/:value', async (req, res) => {
         let [user]: any = await db.Users.findOne(column, value);
         if(user) {
             delete user.password;
-            res.send(user);
+            res.json(user);
         } else {
             res.sendStatus(204);
         }

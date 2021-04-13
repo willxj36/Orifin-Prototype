@@ -43,7 +43,10 @@ const UserResSummary: React.FC<IUserResSummaryProps> = ({ reservations, userInfo
                         <h5><b>Reservation Summary</b></h5>
                     </div>
                     <div className="card-body">
-                        <p><b>Hours used this period:</b> {userInfo.hours}{hourMax ? `/${hourMax}` : null}</p>
+                        <p><b>Hours used/reserved this period:</b> {userInfo.hours}{hourMax ? `/${hourMax}` : null}</p>
+                        {userInfo.membershipStart && (
+                            <p><b>Hours reserved for next period:</b> {userInfo.hoursNext}</p>
+                        )}
                         <p>
                             <b>Next reservation:</b> {((reservations.filter(res => res.startTime > new Date()))[0])?.startTime.toString() || (
                                 <>

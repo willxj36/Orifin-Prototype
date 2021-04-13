@@ -43,6 +43,7 @@ const Reservation: React.FC<IReservationProps> = ({ location }) => {
     const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout>();   //needed for clearTimeout to work, any other variables reset on any state change
     const [userInfo, setUserInfo] = useState<IUser>();     //comes from api call after context is loaded
     const [userHourMax, setUserHourMax] = useState<number>(0);  //max hours in a month based on membership
+    const [periodEnd, setPeriodEnd] = useState<Date>(); //when the currently monthly period ends based on user
 
     const [dateStart, setDateStart] = useState<Date>();     //Date object of exact time of res start based on params
     const [dateEnd, setDateEnd] = useState<Date>();         //Date object of end time of res based on hours selected
@@ -84,6 +85,14 @@ const Reservation: React.FC<IReservationProps> = ({ location }) => {
             })();
         }
     }, [user]);
+
+    useEffect(() => {
+        if(!userInfo?.membershipStart) return;
+        let memberDate: number = new Date(userInfo.membershipStart).getDate();
+        let periodEndMonth: number = new Date().getDate() > memberDate ? new Date().getMonth() + 1 : new Date().getMonth();
+        let fullDate: Date = new Date(new Date().getFullYear(), periodEndMonth, memberDate);    //date will wrap to next month if memberDate is higher than number of days in periodEndMonth
+        setPeriodEnd(fullDate);
+    }, [userInfo]);
 
     useEffect(() => {       //revert params back into useful types
         let time = Number(params.time);
@@ -132,7 +141,11 @@ const Reservation: React.FC<IReservationProps> = ({ location }) => {
     const handleEndChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         let hours = Number(e.currentTarget.value);
         setHours(hours);
-        setUserMaxMessage(userHourMax ? (hours + userInfo.hours) > userHourMax : false);
+        if(dateStart < periodEnd) {
+            setUserMaxMessage(userHourMax ? (hours + userInfo.hours) > userHourMax : false);
+        } else {
+            setUserMaxMessage(userHourMax ? (hours + userInfo.hoursNext) > userHourMax : false);
+        }
         setShowMaxMessage(hours === maxHours.hours);
         let endHours = new Date(Number(params.time) + (hours * 3600000));
         setDateEnd(endHours);
@@ -206,7 +219,8 @@ const Reservation: React.FC<IReservationProps> = ({ location }) => {
 
         if (available) {
             let resData: IReservation = {
-                hours,
+                hours: dateStart < periodEnd ? hours : 0,
+                hoursNext: dateStart < periodEnd ? 0 : hours,
                 startTime: dateStart,
                 endTime: dateEnd,
                 userid: user.userid,
@@ -259,7 +273,7 @@ const Reservation: React.FC<IReservationProps> = ({ location }) => {
 
                             {userMaxMessage && (
                                 <p className="text-danger text-center">
-                                    This reservation will put you over your monthly member hours. You will need to pay for {hours + userInfo.hours - userHourMax} extra hours.
+                                    This reservation will put you over your monthly member hours {dateStart > periodEnd && 'for your next monthly period'}. You will need to pay for {hours + (dateStart < periodEnd ? userInfo.hours : userInfo.hoursNext) - userHourMax} extra hours.
                                 </p>
                             )}
 

@@ -15,8 +15,8 @@ const MemberHome = () => {
     const [reservations, setReservations] = useState<IReservation[]>();
     const [userInfo, setUserInfo] = useState<IUser>();
 
-    const [changed, setChanged] = useState<boolean>(false); //triggers a reload of the reservations if one is edited or deleted
-
+    const [changed, setChanged] = useState<boolean>(false); //triggers a reload of the reservations if one is edited or deleted; true and false don't actually mean anything here
+                                                            //will simply change and back and forth when any change is made to fire the reload either way
     useEffect(() => {
         if(user.userid) {
             (async () => {
@@ -41,7 +41,7 @@ const MemberHome = () => {
                 </div>
                 <div className="row mt-3">
                     <div className="col">
-                        <UserResList reservations={reservations} userInfo={userInfo} setChanged={setChanged} />
+                        <UserResList reservations={reservations} userInfo={userInfo} changed={changed} setChanged={setChanged} />
                     </div>
                 </div>
             </div>

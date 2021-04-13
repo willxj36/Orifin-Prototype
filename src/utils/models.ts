@@ -12,7 +12,8 @@ export interface IUser {
     role?: string,
     _created?: Date,
     membershipStart?: Date,
-    hours?: number
+    hours?: number,
+    hoursNext?: number
 }
 
 export interface IDbResponse {
@@ -42,6 +43,7 @@ export interface IMembership {
 
 export interface IReservation {
     hours?: number,
+    hoursNext?: number,
     id?: number,
     startTime: Date,
     endTime: Date,

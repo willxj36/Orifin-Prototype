@@ -20,6 +20,7 @@ CREATE TABLE users (
     `_created` DATETIME DEFAULT CURRENT_TIMESTAMP,
     `membershipStart` DATETIME NULL,
     `hours` INT NOT NULL DEFAULT 0,
+    `hoursNext` INT NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_role`
     FOREIGN KEY (`roleid`)
@@ -78,7 +79,15 @@ CREATE TABLE reservations (
     `endTime` DATETIME NOT NULL,
     `userid` INT NOT NULL,
     `type` VARCHAR(24) NOT NULL,
-    PRIMARY KEY (`id`)
+    `monitorid` INT NULL,
+    `headsetid` INT NULL,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_monitorid`
+    FOREIGN KEY (`monitorid`)
+    REFERENCES monitors (`id`),
+    CONSTRAINT `fk_headsetid`
+    FOREIGN KEY (`headsetid`)
+    REFERENCES headsets (`id`)
 );
 
 CREATE TABLE monitors (
@@ -90,7 +99,6 @@ CREATE TABLE headsets (
 	`id` INT NOT NULL PRIMARY KEY
 );
 
-ALTER TABLE reservationAvailability
-	MODIFY COLUMN `private` INT NOT NULL DEFAULT '120',
-    MODIFY COLUMN `vr` TINYINT NOT NULL DEFAULT '24'
+ALTER TABLE users
+	ADD COLUMN `hoursNext` INT NOT NULL DEFAULT '0'
 ;

@@ -6,7 +6,7 @@ const getAll = async () => await Query('SELECT * FROM users');
 const checkEmail = async(email: string) => await Query('SELECT email FROM users WHERE email LIKE ?', [email]);
 
 const findOne = async(column: string, value: string | number) => await (
-    Query(`SELECT u.id, u.firstName, u.lastName, u.email, u.password, u._created, u.membershipStart, u.hours, r.role
+    Query(`SELECT u.id, u.firstName, u.lastName, u.email, u.password, u._created, u.membershipStart, u.hours, u.hoursNext, r.role
         FROM users u
         JOIN roles r ON r.id = u.roleid 
         WHERE u.?? LIKE ? LIMIT 1`,
@@ -21,7 +21,9 @@ const put = async(user: IUser, id: number) => await Query('UPDATE users SET ? WH
 
 const deleter = async(id: number) => await Query('DELETE FROM users WHERE id = ?', [id]);
 
-const addHours = async(id: number, hours: number) => await Query('UPDATE users SET hours = hours + ? WHERE id = ?', [hours, id]);
+const addHours = async(id: number, hours: number, hoursNext: number) => await (
+    Query('UPDATE users SET hours = hours + ?, hoursNext = hoursNext + ? WHERE id = ?', [hours, hoursNext, id])
+);
 
 export default {
     getAll,
