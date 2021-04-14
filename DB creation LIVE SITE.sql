@@ -38,7 +38,6 @@ CREATE TABLE rolePermissions (
     REFERENCES `permissions` (`id`)
 );
 
-DROP TABLE users;
 CREATE TABLE users (
 	`id` INT NOT NULL AUTO_INCREMENT,
     `firstName` VARCHAR(64) NOT NULL,

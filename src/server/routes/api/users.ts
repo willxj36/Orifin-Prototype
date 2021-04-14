@@ -19,7 +19,7 @@ router.get('/check-email/:email', async (req, res) => {
     }
 })
 
-router.get('/:column/:value', async (req, res) => {
+router.get('/:column/:value', passport.authenticate('bearer'), isAdminOrUser, async (req, res) => {
     let column = req.params.column;
     let value = req.params.value;
     try {

@@ -11,15 +11,29 @@ INSERT INTO roles SET id = 50, role = 'Team', monthprice = '10000.00', yearprice
 SELECT * FROM roles;
 SELECT * FROM rolePermissions;
 SELECT * FROM permissions;
-INSERT INTO permissions SET permission = 'Additional hours may be purchased at discounted rate';
 SELECT * FROM users;
+SELECT * FROM reservations;
+SELECT * FROM reservationAvailability;
+SELECT * FROM monitors;
+SELECT * FROM headsets;
 
 SELECT * FROM accesstokens;
+
+INSERT INTO headsets SET id = 8;
 
 UPDATE users SET roleid = 20 WHERE id = 14;
 
 DELETE FROM users WHERE id > 14;
+DELETE FROM rolepermissions WHERE roleid = 40;
 
-INSERT INTO rolePermissions SET roleid = 10, permissionid = 4;
-INSERT INTO rolePermissions SET roleid = 20, permissionid = 14;
-INSERT INTO rolePermissions SET roleid = 30, permissionid = 24;
+INSERT INTO rolePermissions SET roleid = 10, permissionid = 164;
+INSERT INTO rolePermissions SET roleid = 20, permissionid = 174;
+INSERT INTO rolePermissions SET roleid = 30, permissionid = 174;
+INSERT INTO rolePermissions SET roleid = 40, permissionid = 174;
+INSERT INTO rolePermissions SET roleid = 50, permissionid = 194;
+
+ALTER TABLE users
+	ADD COLUMN 	`membershipStart` DATETIME NULL,
+    ADD COLUMN `hours` INT NOT NULL DEFAULT 0,
+    ADD COLUMN `hoursNext` INT NOT NULL DEFAULT 0
+;

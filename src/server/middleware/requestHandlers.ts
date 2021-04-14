@@ -9,7 +9,7 @@ export const isAdmin: RequestHandler = (req: any, res, next) => {
 };
 
 export const isAdminOrUser: RequestHandler = (req: any, res, next) => {
-    if(req.user.roleid > 90 || req.user.id == req.params.userid) {
+    if(req.user.roleid > 90 || req.user.id == (req.params.userid || req.params.value)) {
         return next();
     } else {
         res.sendStatus(401);

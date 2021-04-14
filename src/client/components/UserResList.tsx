@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowCircleLeft, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 import { IReservation, IUser } from '../../utils/models';
 import ResListRow from './ResListRow';
