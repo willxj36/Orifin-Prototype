@@ -11,7 +11,7 @@ router.get('/db', async (req, res) => {
         let year: number = new Date().getFullYear();    //need to pull these off of today's date so we can reconstruct with no time
         let month: number = new Date().getMonth();
         let date: number = new Date().getDate();
-        let latestDateIn: Date = days[days.length - 1].date;    //latest day currently in the table
+        let latestDateIn: Date = days[days.length - 1].date || new Date(year, month, date - 1);    //latest day currently in the table
         let latestDateAdd: Date = new Date(year, month, date + 31);   //latest day to be added to end of table (month will auto-update when date + 31 goes over the end of the month)
         let newDateArr = [];
         for(let i = latestDateIn.getTime() + 86400000; i <= latestDateAdd.getTime(); i = i + 86400000) {
