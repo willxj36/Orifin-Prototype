@@ -219,8 +219,8 @@ const Reservation: React.FC<IReservationProps> = ({ location }) => {
 
         if (available) {
             let resData: IReservation = {
-                hours: dateStart < periodEnd ? hours : 0,
-                hoursNext: dateStart < periodEnd ? 0 : hours,
+                hours: periodEnd ? (dateStart < periodEnd ? hours : 0) : hours,
+                hoursNext: periodEnd ? (dateStart < periodEnd ? 0 : hours) : 0,
                 startTime: dateStart,
                 endTime: dateEnd,
                 userid: user.userid,

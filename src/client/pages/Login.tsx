@@ -68,11 +68,11 @@ const Login = () => {
     return (
         <main className="min-vh-100 d-flex bg-deepred pt-5">
             <div className="py-3 mt-5 bg-gold container align-self-start col-md-6 rounded">
-                {params.resType && (
+                {params.resType ? (
                     <div className="text-center my-3">
                         <h5><b><i>Please log in before continuing with your reservation!</i></b></h5>
                     </div>
-                )}
+                ) : null}
                 <div className="mx-auto mb-2 row">
                     <FontAwesomeIcon icon={faEnvelope} size='2x' />
                     <label htmlFor="email" className="ml-2 form-label">Email</label>
