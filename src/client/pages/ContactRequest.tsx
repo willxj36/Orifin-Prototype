@@ -96,7 +96,8 @@ const ContactRequest = () => {
                     <FontAwesomeIcon icon={faComment} size='2x' />
                     <label htmlFor="subject" className="ml-2 form-label">Subject</label>
                 </div>
-                <select onChange={(e) => setSubject(e.currentTarget.value)} className="mb-4 form-control" name="subject" id="subjectInput">
+                <select onChange={(e) => e.currentTarget.value ? setSubject(e.currentTarget.value) : setSubject(undefined)} className="mb-4 form-control" name="subject" id="subjectInput">
+                    <option value="">-- Please choose a subject --</option>
                     <option value="Tournament Info">Tournament Info</option>
                     <option value="General Questions">General Questions</option>
                     <option value="General Feedback">General Feedback</option>

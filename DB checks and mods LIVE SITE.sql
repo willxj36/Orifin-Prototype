@@ -21,9 +21,9 @@ SELECT * FROM accesstokens;
 
 INSERT INTO headsets SET id = 8;
 
-UPDATE users SET roleid = 20 WHERE id = 14;
+UPDATE users SET membershipStart = '2021-03-26 00:00:00' WHERE id = 114;
 
-DELETE FROM users WHERE id > 14;
+DELETE FROM users WHERE id >= 14;
 DELETE FROM rolepermissions WHERE roleid = 40;
 
 INSERT INTO rolePermissions SET roleid = 10, permissionid = 164;
