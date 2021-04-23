@@ -47,7 +47,7 @@ const Calendar = () => {
     }
 
     return(
-        <div className="pt-5 pt-md-0 min-vh-100 d-flex justify-content-center align-items-center bg-deepred">
+        <div className="pt-5 pt-md-0 mt-5 min-vh-100 d-flex justify-content-center align-items-center bg-deepred">
             <div className="col">
                 <div className={`col-sm-9 col-lg-7 mx-auto rounded ${showDate && 'd-none'}`} style={{background: 'linear-gradient(330deg, #FFD766, silver)'}}>
                     <h3 className="text-center">Click on a date to see details for availability</h3>

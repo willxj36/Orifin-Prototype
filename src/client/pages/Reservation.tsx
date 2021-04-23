@@ -244,7 +244,7 @@ const Reservation: React.FC<IReservationProps> = ({ location }) => {
 
             {!confirm && (
                 <>
-                    <div className="p-4 mt-md-n5 mt-5 col col-md-6 col-xl-4 container rounded" style={{ background: 'linear-gradient(210deg, #FFD766, silver)' }}>
+                    <div className="p-4 mt-5 col col-md-6 col-xl-4 container rounded" style={{ background: 'linear-gradient(210deg, #FFD766, silver)' }}>
                         <h5 className="text-center"><i><b>One more step! Please confirm the following info and choose hours and equipment</b></i></h5>
                     </div>
 
