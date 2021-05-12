@@ -49,7 +49,7 @@ const ResListRow: React.FC<IResListRowProps> = ({ reservation, setChanged, chang
         if(window.confirm('Are you sure you wish to cancel this reservation?')) {
             let hours: number = 0;
             let hoursNext: number = 0;
-            reservation.startTime < periodEnd ? (
+            (reservation.startTime < periodEnd || !periodEnd) ? (
                 hours = reservation.startTime.getHours() - (reservation.endTime.getHours() || 24) //returns negative hours intentionally
             ) : ( 
                 hoursNext = reservation.startTime.getHours() - (reservation.endTime.getHours() || 24) 

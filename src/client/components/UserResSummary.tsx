@@ -16,16 +16,29 @@ const UserResSummary: React.FC<IUserResSummaryProps> = ({ reservations, userInfo
 
     const [user,] = useContext<IContextUser>(UserContext);
 
-    const [hourMax, setHourMax] = useState<number>(0);
+    const [hourMax, setHourMax] = useState<number>(0);  //hours allotted each month by membership type
+    const [sortedRes, setSortedRes] = useState<IReservation[]>();   //reservations sorted by time instead of ID
+    const [nextRes, setNextRes] = useState<string>(''); //string to represent next res formatted according to client's wishes
 
-    useEffect(() => {   //converts strings back into dates for usefulness
-        if(reservations) {
-            reservations.forEach(res => {
-                res.startTime = new Date(res.startTime);
-                res.endTime = new Date(res.endTime);
-            });
-        }
+    useEffect(() => {
+        if(!reservations) return;
+        reservations.forEach(res => {       //converts strings back into Date objects
+            res.startTime = new Date(res.startTime);
+            res.endTime = new Date(res.endTime);
+        });
+        setSortedRes(reservations.sort((a, b) => a.startTime.getTime() - b.startTime.getTime()));   //sorts in order of startTime
     }, [reservations])
+
+    useEffect(() => {   //formats date for upcoming reservation, and most recent per client's wishes
+        if(!sortedRes) return;
+        let fullStringNext: string = ((sortedRes.filter(res => res.startTime > new Date()))[0])?.startTime.toString();
+        let stringArrNext = fullStringNext.split(' ');
+        stringArrNext.splice(5, 1); //removes GMT info
+        let timeArrNext = stringArrNext[4].split(':');
+        let hour = Number(timeArrNext[0]);
+        let time = hour < 12 ? (hour === 0 ? '12:00AM' : `${hour}:00AM`) : (hour === 12 ? `12:00PM` : `${hour - 12}:00PM`)  //turn time into user-friendly 12 hour format
+        //todo: hop back in here
+    }, [sortedRes])
 
     useEffect(() => {
         if(user.userid) {
@@ -48,14 +61,14 @@ const UserResSummary: React.FC<IUserResSummaryProps> = ({ reservations, userInfo
                             <p><b>Hours reserved for next period:</b> {userInfo.hoursNext}</p>
                         )}
                         <p>
-                            <b>Next reservation:</b> {((reservations.filter(res => res.startTime > new Date()))[0])?.startTime.toString() || (
+                            <b>Next reservation:</b> {nextRes || (
                                 <>
                                     <span>No upcoming reservations</span>
                                     <span><Link to="/calendar" className="ml-2"><b><i>Book a spot!</i></b></Link></span>
                                 </>
                             )}
                         </p>
-                        <p><b>Last visit:</b> {((reservations.filter(res => res.startTime < new Date())).reverse()[0])?.startTime.toString() || 'No recent visits'}</p>
+                        <p><b>Last visit:</b> {((sortedRes.filter(res => res.startTime < new Date())).reverse()[0])?.startTime.toString() || 'No recent visits'}</p>
                     </div>
                 </>
             ) : (

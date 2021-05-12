@@ -115,17 +115,14 @@ router.put('/:userid/:id', passport.authenticate('bearer'), isAdminOrUser, async
     try {
         let dateTime: Date = new Date(req.body.startTime);   //this block updates availability table
         let date: Date = new Date(dateTime.getFullYear(), dateTime.getMonth(), dateTime.getDate()); //1st 2 lines here assure the right date is being updated separate from timezone
-        console.log(date);
         let publicHours: number = req.body.type === 'public' ? req.body.hours || req.body.hoursNext : 0;
         let privateHours: number = req.body.type === 'private' ? req.body.hours || req.body.hoursNext : 0;
         let teamHours: number = req.body.type === 'team' ? req.body.hours || req.body.hoursNext : 0;
         let vrHours: number = req.body.type === 'vr' ? req.body.hours || req.body.hoursNext : 0;
         let fullTournamentHours: number = req.body.type === 'fullTournament' ? 1 : 0;
         let availResponse: any = await db.Reservations.updateAvail(date, publicHours, privateHours, teamHours, vrHours, fullTournamentHours);
-        console.log(availResponse);
 
         let userHourRes: any = await db.Users.addHours(Number(req.params.userid), req.body.hours, req.body.hoursNext);    //updates hours for user making reservation
-        console.log(userHourRes);
 
         delete req.body.hours;
         delete req.body.hoursNext;

@@ -138,8 +138,13 @@ const Reservation: React.FC<IReservationProps> = ({ location }) => {
         }
     }, [dateEnd]);
 
-    const handleEndChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let hours = Number(e.currentTarget.value);
+    const handleEndChange = (e: React.ChangeEvent<HTMLInputElement>) => {   //TODO: need to use this to control if someone manually enters hours higher than the max
+        let hours: number;
+        if(Number(e.currentTarget.value) < maxHours.hours) {
+            hours = Number(e.currentTarget.value);
+        } else {
+            hours = maxHours.hours;
+        }
         setHours(hours);
         if(dateStart < periodEnd) {
             setUserMaxMessage(userHourMax ? (hours + userInfo.hours) > userHourMax : false);
@@ -231,7 +236,6 @@ const Reservation: React.FC<IReservationProps> = ({ location }) => {
             let response: IPostResponse = await apiService(`/api/reservations/${user.userid}`, 'POST', resData);
             resData.id = Number(response.reservationId);
             setFullData(resData);
-            alert(response.message);
             setConfirm(true);
         } else {
             history.push(`/calendar/${formattedDate}`);
@@ -260,7 +264,7 @@ const Reservation: React.FC<IReservationProps> = ({ location }) => {
 
                         <div className="d-flex flex-column align-items-center">
                             <label htmlFor="hoursSelect">How many hours?</label>
-                            <input onChange={(e) => handleEndChange(e)} className="form-control mb-4 col-4" type="number" min="0" max={maxHours.hours} name="hoursSelect" id="hoursSelectInput" />
+                            <input value={hours} onChange={(e) => handleEndChange(e)} className="form-control mb-4 col-4" type="number" min="0" max={maxHours.hours} name="hoursSelect" id="hoursSelectInput" />
 
                             {showMaxMessage && (
                                 <p className="text-danger text-center">{maxHours.beforeDayEnd ? (
