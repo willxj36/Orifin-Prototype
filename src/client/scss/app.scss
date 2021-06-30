@@ -2,12 +2,14 @@ $theme-colors: (
     'primary': #0091ea, //Covalence Blue!  :D
     'deepred': #400004,
     'gold': #FFD766,
+    'light-gold': #fdf39b,
     'darkinfo': #004488,
     'transparentgray': #DDD8,
 );
 
 @import '../../../node_modules/bootstrap/scss/bootstrap.scss';
 @import '../../../node_modules/react-calendar/dist/Calendar.css';
+@import '../../../node_modules/antd/dist/antd.css';
 
 .react-calendar__tile {
     display: flex;

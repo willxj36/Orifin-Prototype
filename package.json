@@ -33,6 +33,7 @@
     "@types/react-dom": "^16.9.8",
     "@types/react-router": "^5.1.12",
     "@types/react-router-dom": "^5.1.7",
+    "antd": "^4.16.6",
     "bcrypt": "^5.0.1",
     "bootstrap": "^4.5.0",
     "cors": "^2.8.5",
