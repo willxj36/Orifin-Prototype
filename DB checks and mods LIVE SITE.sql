@@ -16,6 +16,7 @@ SELECT * FROM reservations;
 SELECT * FROM reservationAvailability;
 SELECT * FROM monitors;
 SELECT * FROM headsets;
+DESCRIBE employees;
 
 SELECT * FROM accesstokens;
 

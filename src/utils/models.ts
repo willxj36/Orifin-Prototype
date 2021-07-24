@@ -16,6 +16,17 @@ export interface IUser {
     hoursNext?: number
 }
 
+export interface IEmployee {
+    id?: number,
+    firstName?: string,
+    lastName?: string,
+    username?: string,
+    email?: string
+    password?: string,
+    role?: string,
+    _created?: Date
+}
+
 export interface IDbResponse {
     fieldCount: number,
     affectedRows: number,

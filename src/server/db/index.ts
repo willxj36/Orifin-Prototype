@@ -5,7 +5,8 @@ import config from '../config';
 import Users from './queries/users';
 import AccessTokens from './queries/accesstokens';
 import Roles from './queries/roles';
-import Reservations from './queries/reservations';
+import Reservations from './queries/reservations'
+import Employees from './queries/employees';
 
 export const pool = mysql.createPool(config.mysql);
 
@@ -21,5 +22,6 @@ export default {
     Users,
     AccessTokens,
     Roles,
-    Reservations
+    Reservations,
+    Employees
 }

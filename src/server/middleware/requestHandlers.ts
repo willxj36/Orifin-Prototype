@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express-serve-static-core';
 
 export const isEmployee: RequestHandler = (req: any, res, next) => {
-    if(req.user.roleid < 80) {
+    if(req.employee.roleid < 80) {
         res.sendStatus(401)
     } else {
         return next()

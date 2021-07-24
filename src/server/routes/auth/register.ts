@@ -4,7 +4,7 @@ import db from '../../db';
 import { hashPass } from '../../../utils/security/passwords';
 import { createToken } from '../../../utils/security/tokens';
 
-import { IUser } from '../../../utils/models';
+import { IEmployee, IUser } from '../../../utils/models';
 
 const router = express.Router();
 
@@ -23,6 +23,18 @@ router.post('/', async (req, res) => {
     } catch (e) {
         console.log(e);
         res.sendStatus(500);
+    }
+})
+
+router.post('/employee', async (req, res) => {
+    try {
+        const employee: IEmployee = req.body
+        employee.password = hashPass(req.body.password)
+        const dBresponse = await db.Employees.post(req.body)
+        res.json({message: 'New employee registered', dBresponse})
+    } catch (e) {
+        console.log(e)
+        res.sendStatus(500)
     }
 })
 

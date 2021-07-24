@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { useState, useMemo, useCallback } from 'react'
+import { useHistory, useRouteMatch } from 'react-router'
 import * as Antd from 'antd'
 
 import { EmployeeRoles } from '../../common/Common'
@@ -12,51 +13,68 @@ export const generateNewHirePassword = (firstName: string, lastName: string): st
     return firstNameAbbr + lastNameAbbr + createDateMs
 }
 
-export const generateNewHireEmail = (firstName: string, lastName: string): string => {
-    const fullName = firstName + lastName
+export const generateNewHireUsername = (firstName: string, lastName: string): string => {
+    const fullName = firstName.slice(0, 4) + lastName.slice(0, 4)
     const randomNumber = Math.floor(1000 + Math.random() * 9000)
-    return `${fullName}${randomNumber}@ludusemp.com`
+    //TODO: check for uniqueness before returning, rerun random number if not
+    return fullName + randomNumber
 }
 
 const EmpRegister = () => {
 
     const [firstName, setFirstName] = useState<string>('')
     const [lastName, setLastName] = useState<string>('')
-    const [ssn, setSsn] = useState<number>();
-    const [invalidSsn, setInvalidSsn] = useState<boolean>(false)
+    const [email, setEmail] = useState<string>('')
+    const [invalidEmail, setInvalidEmail] = useState<boolean>(false)
     const [waiting, setWaiting] = useState<boolean>(false)
     const [role, setRole] = useState<EmployeeRoles>(EmployeeRoles.Employee0)
 
-    const submitNewEmployee = async () => {
-        setWaiting(true)
-        const email = generateNewHireEmail(firstName, lastName)
-        const password = generateNewHirePassword(firstName, lastName)
-        apiService('/auth/register', 'POST', {
-            firstName,
-            lastName,
-            email,
-            password,
-            role
-        }).then(res => //TODO: resume here, success logic and redirect to confirmation page)
-    }
+    const history = useHistory()
+    const { path } = useRouteMatch()
+
+    const submitNewEmployee = useCallback(() => {
+        if(!firstName || !lastName || !email || !role) {
+            Antd.message.error('You must fill all fields before registering')
+        } else {
+            setWaiting(true)
+            const username = generateNewHireUsername(firstName, lastName)
+            const password = generateNewHirePassword(firstName, lastName)
+            const reqObject = {
+                firstName,
+                lastName,
+                username,
+                email,
+                password,
+                role
+            }
+            apiService('/auth/register/employee', 'POST', reqObject)
+            .then(res => {
+                Antd.message.success(res.message)
+                history.push(`${path}/confirm`, {...reqObject, ...res})
+            }).catch(error => {
+                Antd.message.error('Failed to register new employee. Please try again')
+                console.log(error)
+            }).finally(() => setWaiting(false))
+        }
+    }, [firstName, lastName, email, role])
 
     const positions = useMemo(() => {
         return Object.values(EmployeeRoles).map((role, index) => {
-            if(index <= 10) {
+            if(index <= 10) {   //hard-coded at 10 because 10 employee levels will currently be reserved regardless of actual # of employee roles
                 return(
                     <Antd.Select.Option key={EmployeeRoles[role]} value={role}>{role}</Antd.Select.Option>
                 )
             }
         })
-    }, [])
+    }, [EmployeeRoles])
 
-    const ssnCheck = useCallback((typedSsn) => {
-        const regex = /^\d*$/g
-        if(!typedSsn.match(regex)) {
-            setInvalidSsn(true)
+    const emailCheck = useCallback((typedEmail) => {
+        const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/ig
+        if(!typedEmail.match(emailRegex)) {
+            setInvalidEmail(true)
         } else {
-            setInvalidSsn(false)
-            setSsn(typedSsn)
+            setInvalidEmail(false)
+            setEmail(typedEmail)
         }
     }, [])
 
@@ -69,6 +87,7 @@ const EmpRegister = () => {
                 name='employeeRegister'
                 labelCol={{span: 8}}
                 wrapperCol={{span: 16}}
+                style={{width: '30vw'}}
             >
                 <Antd.Typography.Title className='mb-5' level={3}>Register New Employee</Antd.Typography.Title>
 
@@ -89,12 +108,12 @@ const EmpRegister = () => {
                 </Antd.Form.Item>
 
                 <Antd.Form.Item
-                    label='SSN - ??'
-                    name='ssn'
+                    label='Email'
+                    name='email'
                     required
                 >
-                    <Antd.Input onChange={(e) => ssnCheck(e.currentTarget.value)} />
-                    {invalidSsn && <Antd.Alert type='error' message='SSN must be numerical digits only' />}
+                    <Antd.Input onChange={(e) => emailCheck(e.currentTarget.value)} />
+                    {invalidEmail && <Antd.Alert type='error' message='Please enter valid email address' />}
                 </Antd.Form.Item>
 
                 <Antd.Form.Item

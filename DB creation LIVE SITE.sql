@@ -38,6 +38,21 @@ CREATE TABLE rolePermissions (
     REFERENCES `permissions` (`id`)
 );
 
+CREATE TABLE employees (
+	`id` INT NOT NULL AUTO_INCREMENT,
+    `firstName` VARCHAR(64) NOT NULL,
+    `lastName` VARCHAR(64) NOT NULL,
+	`username` VARCHAR(64) NOT NULL,
+    `email` VARCHAR(255) NOT NULL,
+    `password` VARCHAR(60) NOT NULL,
+    `roleid` INT NOT NULL DEFAULT 80,
+    `_created` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_emp_role`
+    FOREIGN KEY (`roleid`)
+    REFERENCES `roles` (`id`)
+);
+
 CREATE TABLE users (
 	`id` INT NOT NULL AUTO_INCREMENT,
     `firstName` VARCHAR(64) NOT NULL,

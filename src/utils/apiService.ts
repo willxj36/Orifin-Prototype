@@ -49,13 +49,14 @@ interface IOptions {
     [key: string]: any;
 }
 
-export const SetAccessToken = (token: string, user: {userid: number, role: number}) => {
+export const SetAccessToken = (token: string, user: {userid: number, role: number}, sessionID?: number) => {
     AccessToken = token;
     User = user;
 
     localStorage.setItem('token', token);
     localStorage.setItem('userid', User.userid);
     localStorage.setItem('role', User.role);
+    if(sessionID) localStorage.setItem('sessionID', sessionID.toString())
 }
 
 export default apiService;

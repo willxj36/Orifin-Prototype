@@ -4,7 +4,7 @@ import { Link, useRouteMatch } from 'react-router-dom'
 import * as Antd from 'antd'
 
 import apiService, { SetAccessToken } from '../../../utils/apiService'
-import { UserContext } from '../../components/ContextProvider'
+import { IContextUser, UserContext } from '../../components/ContextProvider'
 
 const addEmployee = () => {
     //TODO: admin employee funcs
@@ -19,20 +19,22 @@ const EmpLogin = () => {
     const [username, setUsername] = useState<string>('')
     const [password, setPassword] = useState<string>('')
 
-    const [user, setUser] = useContext(UserContext);
+    const [user, setUser] = useContext<IContextUser>(UserContext);
 
     const { path } = useRouteMatch()
 
     const submitLogin = useCallback(() => {
         setWaiting(true)
         apiService('/auth/login/employee', 'POST', {
-            email: `${username}@ludusemp.com`,
+            username,
             password
         }).then(res => {
-            SetAccessToken(res.token, {userid: res.userid, role: res.roleid})
+            SetAccessToken(res.token, {userid: res.userid, role: res.roleid}, res.sessionID)
             setUser({userid: res.userid, role: res.roleid})
-        }).catch(error => Antd.message.error('There was a problem logging you in. Please check username and password')
-        ).finally(() => setWaiting(false))
+        }).catch(error => {
+            Antd.message.error('There was a problem logging you in. Please check username and password')
+            console.log(error)
+        }).finally(() => setWaiting(false))
     }, [password, username])
 
     const AdminOptions = () => {
@@ -79,6 +81,7 @@ const EmpLogin = () => {
                         onClick={submitLogin}
                         type='primary'
                         htmlType='submit'
+                        disabled={waiting}
                         loading={waiting}
                     >
                         Submit
