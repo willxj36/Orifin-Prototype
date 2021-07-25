@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 import { useHistory, useRouteMatch } from 'react-router'
 import * as Antd from 'antd'
 
@@ -20,6 +20,42 @@ export const generateNewHireUsername = (firstName: string, lastName: string): st
     return fullName + randomNumber
 }
 
+export const Confirmation = (props) => {
+    const { username, password, email } = props.location.state
+
+    useEffect(() => {
+        if(!email) return
+        apiService('/api/contact/verify-employee', 'POST', {
+            email,
+            text: `Your employee username will be ${username}
+            Temporary password: ${password}
+            You will be required to change this password the first time you log in.
+            
+            Welcome to the team!`
+        }).then(res => Antd.message.success(res.message))
+        .catch(error => {
+            console.log(error)
+            Antd.message.error('Email failed to send to employee, save temporary password!')
+        })
+    }, [email])
+
+    return(
+        <div className="min-vh-100 d-flex flex-column justify-content-center align-items-center bg-deepred">
+            <div className="p-4 border border-danger rounded bg-gold" style={{width: '30vw'}}>
+                <Antd.Typography.Title className='mb-5' level={3}>Employee Registered</Antd.Typography.Title>
+                <div className="border border-dark bg-light p-3">
+                    <Antd.Space direction='vertical' size='middle'>
+                        <Antd.Typography.Text>{`Username: ${username}`}</Antd.Typography.Text>
+                        <Antd.Typography.Text>{`Temporary Password: ${password}`}</Antd.Typography.Text>
+                        <Antd.Alert type='warning' message='Temporary password must be changed on first login' />
+                        <Antd.Typography.Text>{`Log in information sent to ${email}`}</Antd.Typography.Text>
+                    </Antd.Space>
+                </div>
+            </div>
+        </div>
+    )
+}
+
 const EmpRegister = () => {
 
     const [firstName, setFirstName] = useState<string>('')
@@ -27,13 +63,14 @@ const EmpRegister = () => {
     const [email, setEmail] = useState<string>('')
     const [invalidEmail, setInvalidEmail] = useState<boolean>(false)
     const [waiting, setWaiting] = useState<boolean>(false)
-    const [role, setRole] = useState<EmployeeRoles>(EmployeeRoles.Employee0)
+    const [roleId, setRoleId] = useState<EmployeeRoles>(EmployeeRoles.Employee0)
+    const [confirm, setConfirm] = useState<boolean>(false)
 
     const history = useHistory()
     const { path } = useRouteMatch()
 
     const submitNewEmployee = useCallback(() => {
-        if(!firstName || !lastName || !email || !role) {
+        if(!firstName || !lastName || !email || !roleId) {
             Antd.message.error('You must fill all fields before registering')
         } else {
             setWaiting(true)
@@ -45,18 +82,19 @@ const EmpRegister = () => {
                 username,
                 email,
                 password,
-                role
+                roleId
             }
             apiService('/auth/register/employee', 'POST', reqObject)
             .then(res => {
                 Antd.message.success(res.message)
-                history.push(`${path}/confirm`, {...reqObject, ...res})
+                history.push(`${path}/confirm`, {...res, ...reqObject})
+                setConfirm(true)
             }).catch(error => {
                 Antd.message.error('Failed to register new employee. Please try again')
                 console.log(error)
             }).finally(() => setWaiting(false))
         }
-    }, [firstName, lastName, email, role])
+    }, [firstName, lastName, email, roleId])
 
     const positions = useMemo(() => {
         return Object.values(EmployeeRoles).map((role, index) => {
@@ -80,8 +118,8 @@ const EmpRegister = () => {
 
     return(
         <div className="min-vh-100 d-flex flex-column justify-content-center align-items-center bg-deepred">
-
-            <Antd.Form
+            {!confirm ? (
+                <Antd.Form
                 className='p-4 border border-danger rounded bg-gold'
                 colon={false}
                 name='employeeRegister'
@@ -121,7 +159,7 @@ const EmpRegister = () => {
                     name='position'
                     required
                 >
-                    <Antd.Select placeholder='Select employee role' onChange={(e) => setRole(EmployeeRoles[e.toString()])}>
+                    <Antd.Select placeholder='Select employee role' onChange={(e) => setRoleId(EmployeeRoles[e.toString()])}>
                         {positions}
                     </Antd.Select>
                 </Antd.Form.Item>
@@ -138,6 +176,11 @@ const EmpRegister = () => {
                 </Antd.Form.Item>
 
             </Antd.Form>
+            ) : (
+                <Confirmation />
+            )}
+
+            
 
         </div>
     )
